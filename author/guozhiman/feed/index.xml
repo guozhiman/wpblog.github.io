@@ -9,7 +9,7 @@
 
 <channel>
 	<title>guozhiman &#8211; 郭智满的部落</title>
-	<atom:link href="http://localhost/author/guozhiman/feed/?simply_static_page=98" rel="self" type="application/rss+xml" />
+	<atom:link href="http://localhost/author/guozhiman/feed/?simply_static_page=184" rel="self" type="application/rss+xml" />
 	<link>/</link>
 	<description></description>
 	<lastBuildDate>Mon, 17 Jun 2024 06:53:01 +0000</lastBuildDate>
@@ -18,7 +18,7 @@
 	hourly	</sy:updatePeriod>
 	<sy:updateFrequency>
 	1	</sy:updateFrequency>
-	<generator>https://wordpress.org/?v=6.5.4</generator>
+	<generator>https://wordpress.org/?v=6.5.5</generator>
 	<item>
 		<title>免费、开源：五分钟带你了解什么是Doris</title>
 		<link>/2024/06/17/21/</link>
@@ -29,7 +29,7 @@
 				<category><![CDATA[开源]]></category>
 		<guid isPermaLink="false">/?p=21</guid>
 
-					<description><![CDATA[事情的起因是这样的 首先感谢大家和我互动，我尽量虚心接受大家的建议，尽量考虑到不同阶段的读者，尽量为大家提供更</p><p><a class="more-link btn btn-outline-danger" href="/2024/06/17/21/">Continue reading <span class="screen-reader-text">免费、开源：五分钟带你了解什么是Doris</span></a>]]></description>
+					<description><![CDATA[事情的起因是这样的 首先感谢大家和我互动，我尽量虚心接受大家的建议，尽量考虑到不同阶段的读者，尽量为大家提供更 [&#8230;]]]></description>
 										<content:encoded><![CDATA[<p data-tool="mdnice编辑器">事情的起因是这样的</p>
 <figure data-tool="mdnice编辑器"><img fetchpriority="high" decoding="async" class="alignnone size-full wp-image-22" title="640-6" src="/wp-content/uploads/2024/06/640-6.png" alt="640-6" width="893" height="533" srcset="/wp-content/uploads/2024/06/640-6.png 893w, /wp-content/uploads/2024/06/640-6-300x179.png 300w, /wp-content/uploads/2024/06/640-6-768x458.png 768w" sizes="(max-width: 893px) 100vw, 893px" /></figure>
 <p data-tool="mdnice编辑器">首先感谢大家和我互动，我尽量虚心接受大家的建议，尽量考虑到不同阶段的读者，尽量为大家提供更多原创内容。</p>
@@ -109,7 +109,7 @@
 				<category><![CDATA[开源]]></category>
 		<guid isPermaLink="false">/?p=14</guid>
 
-					<description><![CDATA[大数据量需要实时查询已经成为很多企业面临的一个难题，为了帮助大家解决这一难题，前面有给大家详细介绍Doris，</p><p><a class="more-link btn btn-outline-danger" href="/2024/06/17/14/">Continue reading <span class="screen-reader-text">五分钟带你了解什么是StarRocks</span></a>]]></description>
+					<description><![CDATA[大数据量需要实时查询已经成为很多企业面临的一个难题，为了帮助大家解决这一难题，前面有给大家详细介绍Doris， [&#8230;]]]></description>
 										<content:encoded><![CDATA[<p data-tool="mdnice编辑器">大数据量需要实时查询已经成为很多企业面临的一个难题，为了帮助大家解决这一难题，前面有给大家详细介绍<span class="wx_search_keyword_wrap">Doris<i class="wx_search_keyword"></i></span>，有兴趣的话可以查看相关内容：</p>
 <p data-tool="mdnice编辑器">《<a href="http://mp.weixin.qq.com/s?__biz=MzAxMjA0OTQwMg==&amp;mid=2450620219&amp;idx=1&amp;sn=e18a680a31087f4b68e0e2cc41fdda19&amp;chksm=8c5211aebb2598b8fcfe99deff90c8f6bf5d34baea28580a6b20e5114dcd49c4067c07f706fb&amp;scene=21#wechat_redirect" target="_blank" rel="noopener" data-itemshowtype="0" data-linktype="2">五分钟部署Doris的极简部署流程</a>》</p>
 <p data-tool="mdnice编辑器">《<a href="http://mp.weixin.qq.com/s?__biz=MzAxMjA0OTQwMg==&amp;mid=2450620282&amp;idx=1&amp;sn=74ec119463f53505a06a788fa11412d6&amp;chksm=8c5211efbb2598f9a3ef4560b167abd03331365f146025502db544a16b744ec590623115a2d7&amp;scene=21#wechat_redirect" target="_blank" rel="noopener" data-itemshowtype="0" data-linktype="2">抛弃Docker：十分钟完成单机部署大数据实时数仓数据库Doris</a>》</p>
@@ -167,7 +167,7 @@
 				<category><![CDATA[业界]]></category>
 		<guid isPermaLink="false">/?p=9</guid>
 
-					<description><![CDATA[美国网络安全和基础设施安全局（CISA）昨日发布公告，要求美国联邦教育、科学及文化委员会各机构 3 周内（截至</p><p><a class="more-link btn btn-outline-danger" href="/2024/06/17/9/">Continue reading <span class="screen-reader-text">win系统 漏洞肆虐网络！</span></a>]]></description>
+					<description><![CDATA[美国网络安全和基础设施安全局（CISA）昨日发布公告，要求美国联邦教育、科学及文化委员会各机构 3 周内（截至 [&#8230;]]]></description>
 										<content:encoded><![CDATA[<p data-mpa-powered-by="yiban.io">美国网络安全和基础设施安全局（CISA）昨日发布公告，要求美国联邦教育、科学及文化委员会各机构 3 周内（截至 7 月 4 日）修补微软 Windows 10 / Windows 11 漏洞，以避免遭到黑客的网络攻击。</p>
 <p><img loading="lazy" decoding="async" class="alignnone size-full wp-image-10" title="640" src="/wp-content/uploads/2024/06/640.png" alt="640" width="1024" height="576" srcset="/wp-content/uploads/2024/06/640.png 1024w, /wp-content/uploads/2024/06/640-300x169.png 300w, /wp-content/uploads/2024/06/640-768x432.png 768w" sizes="(max-width: 1024px) 100vw, 1024px" /></p>
 <p data-vmark="58ac">注：该安全漏洞跟踪编号为 CVE-2024-26169，存在于微软 Windows Error Reporting 错误中，是一个权限管理不当漏洞，在无需用户介入交互的情况下，可以让本地攻击者获得 SYSTEM 权限。</p>
