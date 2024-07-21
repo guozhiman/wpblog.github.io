@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="max-image-preview:large">
+<title>Kali Linux 黑客专用系统 - 郭智满的部落！</title>
+<meta name="description" content="Kail是一种基于Linux的操作系统。它被设计为专门针对网络渗透测试和数字取证的需求，因此具有很多安全工具和功能，如Metasploit、Nmap和Wireshark等。Kail的设计目标是使网络安全专业人士能够在进行...">
+<link rel="dns-prefetch" href="//at.alicdn.com">
+<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=6.6" type="text/css" media="all">
+<style id="classic-theme-styles-inline-css" type="text/css">/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}</style>
+<style id="global-styles-inline-css" type="text/css">:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
+:root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}</style>
+<link rel="stylesheet" id="cxm2-bootstrap-css" href="/wp-content/themes/meteor/assets/css/bootstrap.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-swiper-css" href="/wp-content/themes/meteor/assets/css/swiper-bundle.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-icons-css" href="//at.alicdn.com/t/c/font_1989294_lbwlt58uzfn.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-main-css" href="/wp-content/themes/meteor/style.css?ver=1.2" type="text/css" media="all">
+<style id="cxm2-main-inline-css" type="text/css">:root, [data-bs-theme=light]{ --bs-link-hover-color:#fe4f70; --cbg-color:#fe5872; --cbg-gradient:var(--cx-gradient-rad); } [data-bs-theme=dark] { --bs-link-hover-color: #fe4f70; }</style>
+<link rel="canonical" href="/archives/181">
+</head>
+
+<body class="post-template-default single single-post postid-181 single-format-standard cxtheme-body cxtheme-width-theme" x-data="MeteorData" :data-bs-theme="darkMode ? 'dark' : ''" :class="{'dark': darkMode,'overflow-y-hidden':popBgshow || searchPopup}">
+    <div class="site-wrapper">
+        <header class="header-s1" :class="{'onfixed' : searchPopup}">
+            <div class="headnav">
+                <div class="container-xl h-container">
+                    <div class="cxlogo">
+                                                <a href="/">
+                            <img src="/wp-content/uploads/2024/07/202406201718847016352278-1.png" alt="郭智满的部落！" class="c-light" width="120" height="60">
+                            <img src="/wp-content/uploads/2024/07/202406201718847016352278-2.png" alt="郭智满的部落！" class="c-dark" width="120" height="60">
+                        </a>
+                    </div>
+                    <nav class="head-menu d-lg-flex">
+                        <ul id="menu-main-menu" class="navbar-nav">
+                        <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item current-post-ancestor menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                        </ul>
+                    </nav>
+                    <div class="header-r">
+                        <ul class="h-btnbox sm-cnone">
+                            <li class="list-inline-item">
+                                <a href="/archives/181">
+                                    <i class="cxicon cxicon-ranking"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="javascript:;" @click="darkMode = !darkMode;localStorage.setItem('darkMode', darkMode);">
+                                    <i class="cxicon cxicon-sunlight" :class="{'d-none':darkMode}"></i>
+                                    <i class="cxicon cxicon-moon" :class="{'d-none':!darkMode}"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="h-buttons">
+                            <button type="button" class="search btn-default icon-button" @click="searchPopup = !searchPopup" title="Search Btn">
+                                <i class="cxicon cxicon-search font-inherit" :class=" searchPopup ? 'cxicon-error' : 'cxicon-search'"></i>
+                            </button>
+                            <!-- 移动端菜单 -->
+                            <button type="button" class="search btn-default icon-button" @click="moibleMenu = popBgshow = true" title="Menu Btn">
+                                <i class="cxicon cxicon-menu3 font-inherit"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>            
+        </header><!-- header.end-->
+        <!-- Moible Nav -->
+        <div class="mobile-navbox trans_2ms" :class="{'visible': moibleMenu}">
+            <button type="button" class="btn-close" aria-label="关闭" @click="popBgshow = moibleMenu = false"></button>
+            <div class="m-menulogo p-4 pt-3"></div>
+            <div class="m-navbox p-4 pt-0">
+                <ul id="moible-menu" class="m-nav pe-4">
+                <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item current-post-ancestor menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                </ul>
+            </div>
+        </div>
+        <!-- MN.end -->
+        
+
+        <main class="main-container" role="main">
+<div class="banner trem-banner mb-4">
+    <div class="container-xl">
+        
+            <nav class="breadcrumbs" aria-label="面包屑导航">
+                <ol class="breadcrumb flex-nowrap">
+                
+        <li class="item-home flex-shrink-0">
+            <a href="/" title="郭智满的部落！">
+                <span>首页</span>
+            </a>
+        </li>
+
+        <li class="item-category flex-shrink-0">
+            <a href="/archives/category/caozuoxitong/linuxunix" title="Linux/Unix">
+                <span>Linux/Unix</span>
+            </a>
+        </li>
+
+        <li class="item-current line-one pe-4">
+            <a href="/archives/181" title="Kali Linux 黑客专用系统">
+                <span>Kali Linux 黑客专用系统</span>
+            </a>
+        </li>
+                </ol>
+            </nav>
+                </div>
+</div>
+<!-- 3 -->
+<section class="wi widget-coltow">
+    <div class="container-xl">
+        <div class="row cxrow">
+            <div class="col-left">
+                <div class="rowleft">
+                    <div class="main-content pe-xl-4">
+                        <article id="post-43" class="post is-single post-content status-publish" x-data="cxm2_Postmeta">
+    <!-- 文章标题 -->
+    <header class="post-header">
+        <h1 class="post-title mt-3 mb-4 fs-2">Kali Linux 黑客专用系统</h1>        <!-- 文章元信息（如作者、发布时间、分类、标签等） -->
+        <div class="article-meta">
+<ul class="meta-itembox">
+<li class="list-inline-item"><a class="author me-0" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="https://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="https://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" decoding="async"></figure>guozhiman</a></li>
+<li class="list-inline-item"><a href="/archives/category/caozuoxitong/linuxunix" rel="category tag">Linux/Unix</a></li>
+<li class="list-inline-item">2024年7月21日</li>
+</ul>
+</div>    </header>
+
+    <!-- 文章正文 -->
+    <div class="article-body mb-4">
+        
+<p>      Kail是一种基于Linux的操作系统。它被设计为专门针对网络渗透测试和数字取证的需求，因此具有很多安全工具和功能，如Metasploit、Nmap和Wireshark等。Kail的设计目标是使网络安全专业人士能够在进行渗透测试、网络审核、数字取证等任务时提高效率。Kail的设计采用了轻便、快速启动和自我维护等特征。它可以在Live CD、Live USB设备以及物理安装到计算机的方式下使用。对于安全专家来说，Kail的灵活性和可扩展性是其主要优点。Kail的系统核心是Linux，使用Debian发行版，是一个开源系统，因此可以通过自由访问和修改来定制自己的需要。Kail内置了大量的渗透测试、取证分析和反病毒工具，安全专家可以使用这些工具来加强网络安全。Kail中已经包含了Metasploit等工具，借助Metasploit等工具，安全专家可以模拟网络攻击来测试网络的防御机制。此外，Wireshark等分析工具也可以捕获数据包和流量，从而更深入的分析网络中的漏洞。Kail还包括了许多加密方法和病毒分析工具，这些工具可以在确保数据安全的情况下从网络中获取更多信息。在使用Kail过程中，安全专家可以轻松地实现深度维护。Kail中的许多用于网络调试和分析的工具是非常强大的，在诊断网络故障和调试网络应用程序时都非常有用。Kail还具有面向安全应急响应的能力，可以帮助安全专家在发生网络事件时更快地响应和解决问题。总之，Kail是一个专门为网络安全专家设计的操作系统。它包含了大量渗透测试和取证分析工具，使得安全专家可以更加容易地加强网络安全。Kail具有良好的灵活性和可扩展性，支持Live CD、Live USB设备和物理安装。它是一个可靠的、易于使用和预安装了最常用工具的操作系统，是网络安全专家的选择之一。</p>
+
+
+
+<p>Kali 是一个基于 Debian 的 Linux 发行版。它的目标就是为了简单：在一个实用的工具包里尽可能多的包含渗透和审计工具。Kali 实现了这个目标。大多数做安全测试的开源工具都被囊括在内。</p>
+
+
+
+<p>什么是 Kali？</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" src="/wp-content/uploads/2024/07/20240623081951171910199187655.webp" alt=""></figure>
+
+
+
+<p><em>Kali Linux Desktop</em></p>
+
+
+
+<p>Kali 是由 Offensive Security 公司开发和维护的。它在安全领域是一家知名的、值得信赖的公司，它甚至还有一些受人尊敬的认证，来对安全从业人员做资格认证。</p>
+
+
+
+<p>Kali 也是一个简便的安全解决方案。Kali 并不要求你自己去维护一个 Linux 系统，或者你自己去收集软件和依赖项。它是一个“交钥匙工程”。所有这些繁杂的工作都不需要你去考虑，因此，你只需要专注于要审计的真实工作上，而不需要去考虑准备测试系统。</p>
+
+
+
+<h2 class="wp-block-heading">如何使用它？</h2>
+
+
+
+<p>Kali 是一个 Linux 发行版。与任何一个其它的 Linux 发行版一样，你可以将它永久安装到一个硬盘上。那样它会工作的更好，但是你不能将它作为一个日常使用的操作系统。因为它是为渗透测试构建的，这就是你使用它的全部理由。</p>
+
+
+
+<p>最好是将 Kali 制作为自启动发行版。你可以将 Kali 刻录到一张 DVD 或者是制作到一个自启动 U 盘上来运行它。你没有必要在一个 Kali 上安装任何软件或者保存任何文件。你可以在需要测试一个系统时随时来启动它。它也有非常好的灵活性，可以让运行 Kali 的机器随时运行在想要测试的网络上。</p>
+
+
+
+<h2 class="wp-block-heading">Kali 可以做什么？</h2>
+
+
+
+<p>Kali 里面有很多的安全工具而不是别的。这就是它能做的事。不管怎么说，Kali 就是一个安全工具。</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" src="/wp-content/uploads/2024/07/20240623081952171910199293885.webp" alt=""></figure>
+
+
+
+<p><em>Kali Zenmap</em></p>
+
+
+
+<p>它有像 NMap 和 Wireskark 这样的经典信息采集工具。</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" src="/wp-content/uploads/2024/07/20240623081954171910199429843.webp" alt=""></figure>
+
+
+
+<p><em>Kali Linux Wireshark</em></p>
+
+
+
+<p>Kali 也有面向 WiFi 的工具，像 Aircrack-ng、Kismet、以及 Pixie。</p>
+
+
+
+<p>对于破解密码，它也有像 Hydra、Crunch、Hashcat、以及 John the Ripper 这样的工具。</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" src="/wp-content/uploads/2024/07/20240623081955171910199533395.webp" alt=""></figure>
+
+
+
+<p><em>Kali Metasploit</em></p>
+
+
+
+<p>还有更多的成套工具，包括 Metasploit 和 Burp Suite。</p>
+
+
+
+<p>这些只是 Kali 缺省内置的一小部分安全工具。完整的了解这些工具需要很多的时间，但是，你可以清楚地看到许多非常流行的工具它都有。</p>
+
+
+
+<h2 class="wp-block-heading">Kali 是为你准备的吗？</h2>
+
+
+
+<p>Kali 并不是为普通用户准备的。它并不是一个运行在你的笔记本电脑上的普通 Linux 发行版，而是一个很酷的“黑客操作系统“。如果你使用这个操作系统，那么你将会运行着一个缺乏安全保障的系统，因为 Kali 被设计为以 root 权限运行。它自身并不安全，并且它的配置也与普通的 Linux 发行版不一样。它是一个攻击型工具，而不是一个防御型工具。</p>
+
+
+
+<p>Kali 并不是个玩具。你可以使用它内置的工具去做一些会产生真实伤害的危险的事（你懂的），那将给你带来很多真实的麻烦。对于一个未受到严格教育的用户来说，做一些严重违法的事情是很容易的，并且之后你就会发现自己被陷入很无助的境地。</p>
+
+
+
+<p>说了这么多，但是，Kali 对于一个专业用户来说，它是一个极好的工具。如果你是一个网络管理员，想对你的网络做一个真实的测试，Kali 可以做到你所希望的一切事情。Kali 也有一些优秀的开发工具，用于去实时审计它们的应用程序。</p>
+
+
+
+<p>当然，如果你正好有兴趣学习关于安全的知识，你可以在某些受控环境中去使用 Kali，它可以教你学习很多的非常优秀的知识。</p>
+
+
+
+<p>Kali Linux 是许多优秀的安全工具的集合。对于专业用户来说，它有难以置信的好处，但是对于一些不怀好意的人来说，也可以产生很多大麻烦。小心地使用 Kali，充分利用它的巨大优势。如果不这样的话，你将在某个地方（你懂的）度过你的余生。</p>
+
+
+
+<p>Kali Linux是一个基于Debian的Linux发行版，官方称用于网络安全渗透测试和安全审计。其中Kali Linux 系统在安装完成后自带很多软件，而且它是有图形界面的，它自带的的软件都是用于安全测试使用的。软件类型分为以下几种</p>
+
+
+
+<p>渗透测试安全研究计算机痕迹追踪逆向工程Kail Linux现在由 Offensive Security这家信息安全研究公司负责维护，最初于2013年发行，到目前已经持续7年的时间了，而且它的开发规范完全遵守Debian的规则。</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" src="/wp-content/uploads/2024/07/20240623081956171910199666161.webp" alt=""></figure>
+
+
+
+<p>界面是这样子的，每一个工具都按照功能分类放在一起，但是实际上很多工具的功能都是重复的，会让人眼花缭乱不知道用哪一个更好用，或者破解能力更强，可见软件太多并不是一件好事。</p>
+
+
+
+<p>Kail和BackTrack一样都是免费公开发行的Linux系统，但是像红帽这种就是付费的。如果想要尝试一下Kail系统的话随时都可以，过程中不会收取一分钱。</p>
+
+
+
+<p>Kail中的工具源代码大多都是开源的，可以供任何人进行自定义升级或者改造成需要的功能。</p>
+
+
+
+<p>Kail的文件系统也遵守了标准的层级结构，方便定位和查找二进制文件。</p>
+
+
+
+<p>Kail对无线设备的支持也很好，包括USB接口等多种无线设备都有良好的兼容性，这其中也是因为必备的无线WIFI密码破解工具。</p>
+
+
+
+<p>Kail的内核通常是打了最新的补丁的，因为这是一个用于安全人员进行测试的系统，所以它必须做到最及时的修复安全漏洞，否则将不具有安全研究的价值。</p>
+
+
+
+<p>Kail系统的开团团队相互之间存在安全协议，因此每个提交补丁的成员都必须是被信任的，这样可以避免人为的安全隐患。成员提交的每一个软件包都使用GPG签名认证，在共享库中也需要GPG签名认证。</p>
+
+
+
+<p>Kail的工具虽然大多都是由英语为母语的人编写，但它们同样能够支持多数国通用语言，如中文。</p>
+
+
+
+<p>Kail支持<strong>ARMEL</strong>和<strong>ARMHF</strong>这种arm架构下提供的ABI系统接口，因为arm系统cpu越来越便宜，在市面上的普及率也越来越高。</p>
+
+
+
+<p>一、Kali是什么Kali Linux 是专门用于渗透测试的Linux操作系统，它由BackTrack发展而来。在整合了IWHAX、WHOPPIX和Auditor这三种渗透测试专用Live Linux后，BackTrack正式改名为Kali LInux。</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" src="/wp-content/uploads/2024/07/20240623081957171910199711421.webp" alt=""></figure>
+
+
+
+<p>二、Kali有什么优势 Kali Linux 为满足专业渗透测试和安全审核的要求而设计。它包含 600 多款工具软件，适用于各种信息安全和渗透测试研究。包含的工具包括如下，但不限于：Metasploit（安全漏洞检测工具） Nmap（网络扫描和嗅探工具包） Ophcrack（利用彩虹表来破解 Windows密码的工具） Wireshark （网络封包分析软件） BeEF (浏览器渗透测试工具)</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" src="/wp-content/uploads/2024/07/20240623081958171910199848550.webp" alt=""></figure>
+
+
+
+<p>三、适不适合使用Kali%0D%0A如果使用 Linux 操作系统是为了完成开发任务或者单纯就是体验一下 Linux 操作系统，那 kali Linux 并不适合，可以考虑使用 Ubuntu或 Linux mint 等。</p>
+
+
+
+<p>四、使用Kali的风险kali Linux 上包含一系列对网络环境具有破坏能力的工具软件，除非取得对目标系统的渗透测试和攻击许可，否则不要轻易使用 kali Linux 中的软件工具去扫描和攻击网络，否则等待你的只有法律的制裁。我建议可以在虚拟机中使用，针对自己本机和其他虚拟机来进行渗透及安全测试。</p>
+
+
+
+<p>五、在哪下载Kali</p>
+
+
+
+<p>正版镜像：Get Kali | Kali Linux&nbsp;(https://www.kali.org/get-kali/#kali-platforms)</p>
+
+
+
+<p>阿里镜像：kali镜像_kali下载地址_kali安装教程-阿里巴巴开源镜像站 (aliyun.com)（https://developer.aliyun.com/mirror/kali）</p>
+    </div>
+
+    <!-- 底部元信息 -->
+    <div class="post-footmeta mb-4">
+        <div class="row d-flex align-items-center">
+            <div class="col-md-6 col-12">
+                <div class="post-share justify-content-sm-start mb-3 mb-sm-0">
+                    <div class="post-btnmeta">
+                        <span class="post-like trans_2ms" :class="postMeta.postLike_on ? 'on' : ''" @click="_setlike"><i class="cxicon cxicon-zan-black"></i> <em style="font-style: normal" x-text="postMeta.postLike" x-show="postMeta.postLike !== 0"></em></span>
+                    </div>
+                    <i class="cxline-1"></i>
+                    <ul class="social-icons" x-data="{'postThumb':'/wp-content/uploads/2024/07/20240623081951171910199187655.webp','postLink' : window.location.href, 'postTitle' : document.title}">
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微信" x-bind="weixinLink"><i class="cxicon cxicon-weixin"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微博" x-bind="weiboLink"><i class="cxicon cxicon-weibo"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到QQ" x-bind="qqLink"><i class="cxicon cxicon-qq"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-12 text-center text-md-end">
+                <div class="tags">
+                                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-author p-4 mt-5 flex-sm-row">
+        <div class="thumb"><a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="https://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=100&#038;d=mm&#038;r=g" srcset="https://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=200&#038;d=mm&#038;r=g 2x" class="avatar avatar-100 photo" height="100" width="100" decoding="async"></figure></a></div>        <div class="details ps-sm-4 mt-3 mt-sm-0 text-sm-start">
+            <h4 class="name"><a href="/archives/author/guozhiman" title="文章作者 guozhiman" rel="author">guozhiman</a></h4>
+            <p>暂无介绍....</p>
+            <ul class="social-icons list-unstyled list-inline mb-0">
+                <!-- 社交信息 -->
+                <li class="list-inline-item">
+                    <a href="#"><i class="cxicon cxicon-weixin"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-weibo"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-qq"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <i class="cxline-1 ms-0 me-2"></i>
+                    <a href="/archives/author/guozhiman" class="author-link">TA的主页 <i class="cxicon cxicon-jtright font-inherit"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row nextprev-post-wrapper mb-4">
+        <div class="col-md-6 col-12 mb-3 mb-sm-0">
+            <div class="nextprev-post prev">
+                <span class="nextprev-text"> 上一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/169" rel="prev">新一代Linux服务器运维管理平台！有颜料更足！</a>                </h5>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="nextprev-post next text-sm-end">
+                <span class="nextprev-text">下一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/190" rel="next">技术员联盟 Windows 11 专业版 23H2</a>                </h5>
+            </div>
+        </div>
+    </div>
+
+    <section class="comments">
+        <!-- 评论区代码 -->
+    </section>
+
+    <div class="mso nobg">
+        <div class="module-tit item-center noborder">
+            <h3 style="font-size:1rem">
+<i class="cxline"></i>延伸阅读:</h3>
+            <p></p>
+        </div>
+        <div class="module-content">
+        <div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/181">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/20240623081951171910199187655.webp" width="280" height="180" alt="Kali Linux 黑客专用系统">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/caozuoxitong/linuxunix" class="sort sort-10">Linux/Unix</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/181">Kali Linux 黑客专用系统</a></h5>
+            <p class="pdesc">Kail是一种基于Linux的操作系统。它被设计为专门针对网络渗透测试和数字取证的需求，因此具有很多安全工具和功能，如M...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="https://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="https://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月21日</span>                </div>
+                <div class="r">
+                    <a href="/archives/181" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>        </div>
+    </div>
+</article>                    </div>
+                </div>
+            </div>
+            
+            <div class="col-right" id="sidebar">
+    <div class="rowright">
+        <aside class="side-area">
+            <div class="widget widget_block widget_search"><form role="search" method="get" action="/" class="wp-block-search__button-outside wp-block-search__text-button wp-block-search">
+<label class="wp-block-search__label" for="wp-block-search__input-1">搜索</label><div class="wp-block-search__inside-wrapper ">
+<input class="wp-block-search__input" id="wp-block-search__input-1" placeholder="" value="" type="search" name="s" required><button aria-label="搜索" class="wp-block-search__button wp-element-button" type="submit">搜索</button>
+</div>
+</form></div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期文章</h2>
+
+
+<ul class="wp-block-latest-posts__list wp-block-latest-posts">
+<li><a class="wp-block-latest-posts__post-title" href="/archives/208">一款免费且不限速的远控工具|远控</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/198">一款开源、免费和功能强大的截屏、录屏和录音、录像软件！简单易用！</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/194">技术员联盟 Windows 10 企业版LTSC 21H2</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/190">技术员联盟 Windows 11 专业版 23H2</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/181">Kali Linux 黑客专用系统</a></li>
+</ul>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期评论</h2>
+
+
+<div class="no-comments wp-block-latest-comments">没有评论可显示。</div>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">分类</h2>
+
+
+<ul class="wp-block-categories-list wp-block-categories">	<li class="cat-item cat-item-4">
+<a href="/archives/category/docker">Docker</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/archives/category/caozuoxitong/windows">Win系统</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/archives/category/qianduan">前端</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/archives/category/kaiyuan">开源</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/archives/category/meirifenxiang">每日分享</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/archives/category/wangluoanquan">网络安全</a>
+</li>
+</ul>
+</div></div>
+</div>        </aside>
+    </div>
+</div>        </div>
+    </div>
+</section>
+<!-- 3.end -->
+
+        </main><!-- main.end -->
+
+        <footer class="footer-s1">
+            <div class="linebox bg-auto"></div>
+            <div class="foottop">
+                <div class="container-xl">
+                    <div class="footmain-box">
+                        <div class="aboutus_link">
+<a href="https://www.baidu.com/" target="_blank">百度一下</a><a href="https://yunsuo.qianxin.com/" target="_blank">云锁</a><a href="https://www.d99net.net/" target="_blank">D盾</a>
+</div>
+<div class="footer-desc">免责声明：本网站部分内容由用户自行上传，如权利人发现存在误传其作品情形，请及时与本站联系。</div>
+<div class="foot-copyright">郭智满 © 2024. All Rights Reserved</div>                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- 弹出层代码 -->
+        <div class="popbg-box trans_2ms" :class="{'visible': popBgshow}" @click="popBgshow = moibleMenu = false"></div>
+        <div class="search-popup trans_2ms" :class="{'visible': searchPopup}">
+            <button type="button" class="btn-close " aria-label="Close" @click="searchPopup = false"></button>
+            <div class="search-content">
+                <div class="search-form-box">
+                    <form class="d-flex search-form" method="get" action="">
+                        <input class="form-control me-2" placeholder="搜索并按回车键..." type="text" name="s" id="search" value="" aria-label="搜索">
+                        <button class="btn btn-default btn-lg" type="submit" style="padding: 9.5px 36px;"><i class="cxicon cxicon-search"></i></button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <!-- .end -->
+        </div>
+        <!--.sit-wrapper-->
+        <script type="text/javascript" src="/wp-content/themes/meteor/assets/js/swiper-bundle.min.js?ver=1.2" id="cxm2-swiper-js"></script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/plugins.min.js?ver=1.2" id="cxm2-plugins-js"></script>
+<script type="text/javascript" id="cxm2-alpine-js-extra">
+/* <![CDATA[ */
+var cxjs = {"homeurl":"","jsonapi":"\/wp-json\/cxv1\/","themedir":"\/wp-content\/themes\/meteor","ajaxurl":"\/wp-admin\/admin-ajax.php","postId":"181"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/alpine.min.js?ver=3.13.10" id="cxm2-alpine-js"></script>
+        </body>
+
+        </html>
