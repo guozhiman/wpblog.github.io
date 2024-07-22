@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="max-image-preview:large">
+<title>Docker篇 | 雷池WAF ​Web应用防火墙 - 郭智满的部落！</title>
+<meta name="description" content="该篇教程主要讲解雷池WAF的简单使用雷池WAF:一款简单、轻便、安全的WAF，保护您的web应用程序免受常见攻击和利用。基于Nginx开发，并作为反向代理连接。 防护原理：简单的网站流量拓扑，外部用户发出请求，经过网络最...">
+<link rel="dns-prefetch" href="//at.alicdn.com">
+<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=6.6" type="text/css" media="all">
+<style id="classic-theme-styles-inline-css" type="text/css">/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}</style>
+<style id="global-styles-inline-css" type="text/css">:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
+:root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}</style>
+<link rel="stylesheet" id="cxm2-bootstrap-css" href="/wp-content/themes/meteor/assets/css/bootstrap.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-swiper-css" href="/wp-content/themes/meteor/assets/css/swiper-bundle.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-icons-css" href="//at.alicdn.com/t/c/font_1989294_lbwlt58uzfn.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-main-css" href="/wp-content/themes/meteor/style.css?ver=1.2" type="text/css" media="all">
+<style id="cxm2-main-inline-css" type="text/css">:root, [data-bs-theme=light]{ --bs-link-hover-color:#fe4f70; --cbg-color:#fe5872; --cbg-gradient:var(--cx-gradient-rad); } [data-bs-theme=dark] { --bs-link-hover-color: #fe4f70; }</style>
+<link rel="canonical" href="/archives/34">
+</head>
+
+<body class="post-template-default single single-post postid-34 single-format-standard cxtheme-body cxtheme-width-theme" x-data="MeteorData" :data-bs-theme="darkMode ? 'dark' : ''" :class="{'dark': darkMode,'overflow-y-hidden':popBgshow || searchPopup}">
+    <div class="site-wrapper">
+        <header class="header-s1" :class="{'onfixed' : searchPopup}">
+            <div class="headnav">
+                <div class="container-xl h-container">
+                    <div class="cxlogo">
+                                                <a href="/">
+                            <img src="http://www.guozhiman.top/wp-content/uploads/2024/07/202406201718847016352278-1.png" alt="郭智满的部落！" class="c-light" width="120" height="60">
+                            <img src="http://www.guozhiman.top/wp-content/uploads/2024/07/202406201718847016352278-2.png" alt="郭智满的部落！" class="c-dark" width="120" height="60">
+                        </a>
+                    </div>
+                    <nav class="head-menu d-lg-flex">
+                        <ul id="menu-main-menu" class="navbar-nav">
+                        <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                        </ul>
+                    </nav>
+                    <div class="header-r">
+                        <ul class="h-btnbox sm-cnone">
+                            <li class="list-inline-item">
+                                <a href="/archives/34">
+                                    <i class="cxicon cxicon-ranking"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="javascript:;" @click="darkMode = !darkMode;localStorage.setItem('darkMode', darkMode);">
+                                    <i class="cxicon cxicon-sunlight" :class="{'d-none':darkMode}"></i>
+                                    <i class="cxicon cxicon-moon" :class="{'d-none':!darkMode}"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="h-buttons">
+                            <button type="button" class="search btn-default icon-button" @click="searchPopup = !searchPopup" title="Search Btn">
+                                <i class="cxicon cxicon-search font-inherit" :class=" searchPopup ? 'cxicon-error' : 'cxicon-search'"></i>
+                            </button>
+                            <!-- 移动端菜单 -->
+                            <button type="button" class="search btn-default icon-button" @click="moibleMenu = popBgshow = true" title="Menu Btn">
+                                <i class="cxicon cxicon-menu3 font-inherit"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>            
+        </header><!-- header.end-->
+        <!-- Moible Nav -->
+        <div class="mobile-navbox trans_2ms" :class="{'visible': moibleMenu}">
+            <button type="button" class="btn-close" aria-label="关闭" @click="popBgshow = moibleMenu = false"></button>
+            <div class="m-menulogo p-4 pt-3"></div>
+            <div class="m-navbox p-4 pt-0">
+                <ul id="moible-menu" class="m-nav pe-4">
+                <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                </ul>
+            </div>
+        </div>
+        <!-- MN.end -->
+        
+
+        <main class="main-container" role="main">
+<div class="banner trem-banner mb-4">
+    <div class="container-xl">
+        
+            <nav class="breadcrumbs" aria-label="面包屑导航">
+                <ol class="breadcrumb flex-nowrap">
+                
+        <li class="item-home flex-shrink-0">
+            <a href="/" title="郭智满的部落！">
+                <span>首页</span>
+            </a>
+        </li>
+
+        <li class="item-category flex-shrink-0">
+            <a href="/archives/category/docker" title="Docker">
+                <span>Docker</span>
+            </a>
+        </li>
+
+        <li class="item-current line-one pe-4">
+            <a href="/archives/34" title="Docker篇 | 雷池WAF ​Web应用防火墙">
+                <span>Docker篇 | 雷池WAF ​Web应用防火墙</span>
+            </a>
+        </li>
+                </ol>
+            </nav>
+                </div>
+</div>
+<!-- 3 -->
+<section class="wi widget-coltow">
+    <div class="container-xl">
+        <div class="row cxrow">
+            <div class="col-left">
+                <div class="rowleft">
+                    <div class="main-content pe-xl-4">
+                        <article id="post-43" class="post is-single post-content status-publish" x-data="cxm2_Postmeta">
+    <!-- 文章标题 -->
+    <header class="post-header">
+        <h1 class="post-title mt-3 mb-4 fs-2">Docker篇 | 雷池WAF ​Web应用防火墙</h1>        <!-- 文章元信息（如作者、发布时间、分类、标签等） -->
+        <div class="article-meta">
+<ul class="meta-itembox">
+<li class="list-inline-item"><a class="author me-0" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" decoding="async"></figure>guozhiman</a></li>
+<li class="list-inline-item"><a href="/archives/category/docker" rel="category tag">Docker</a></li>
+<li class="list-inline-item">2024年7月21日</li>
+</ul>
+</div>    </header>
+
+    <!-- 文章正文 -->
+    <div class="article-body mb-4">
+        
+<figure class="wp-block-image"><img fetchpriority="high" decoding="async" class="alignnone size-full wp-image-269" src="/wp-content/uploads/2024/07/20240625162935171930417557417-1.png" width="350" height="350" alt="20240625162935171930417557417-1" title="20240625162935171930417557417-1"></figure>
+
+
+
+<p><strong>该篇教程主要讲解雷池WAF<em></em>的简单使用</strong><br>雷池WAF:<br>一款简单、轻便、安全的WAF，保护您的web应用程序<em></em>免受常见攻击和利用。基于Nginx开发，并作为反向代理<em></em>连接。</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" class="alignnone size-full wp-image-273" src="/wp-content/uploads/2024/07/20240625162937171930417781146-1.png" width="1080" height="532" alt="20240625162937171930417781146-1" title="20240625162937171930417781146-1"></figure>
+
+
+
+<p>防护原理：简单的网站流量拓扑，外部用户发出请求，经过网络最终传递到网站服务器。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-270" src="/wp-content/uploads/2024/07/20240625162938171930417851820-1.webp" width="880" height="320" alt="20240625162938171930417851820-1" title="20240625162938171930417851820-1"></figure>
+
+
+
+<p>雷池以反向代理方式接入，优先于网站服务器接收流量，对流量中的攻击行为进行检测和清洗，将清洗过后的流量转发给网站服务器。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-271" src="/wp-content/uploads/2024/07/20240625162939171930417914284-1.webp" width="955" height="285" alt="20240625162939171930417914284-1" title="20240625162939171930417914284-1"></figure>
+
+
+
+<p>主要流程目录：1.安装2.使用2.1.重置密码<br>2.2.添加站点<br>2.3.测试防护2.4.防护配置2.5.卸载<br>3.总结</p>
+
+
+
+<p><strong>1.安装</strong>雷池和Web业务服务不建议部署到同一台机器中，安装雷池需要已经有docker环境，这里我就直接演示在Unraid上安装了。<br>在线安装，输入下面命令：</p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted">bash&nbsp;-c&nbsp;"$(curl&nbsp;-fsSLk&nbsp;https://waf-ce.chaitin.cn/release/latest/setup.sh)"</pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-272" src="/wp-content/uploads/2024/07/20240625162941171930418144621-1.webp" width="741" height="353" alt="20240625162941171930418144621-1" title="20240625162941171930418144621-1"></figure>
+
+
+
+<p>安装目录，默认回车即可</p>
+
+
+
+<ul class="wp-block-list">
+<li>
+
+
+
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted">因为我是Unraid，想放到docker目录方便管理/mnt/user/appdata/safeline</pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-274" src="/wp-content/uploads/2024/07/20240625162942171930418259520-1.webp" width="736" height="392" alt="20240625162942171930418259520-1" title="20240625162942171930418259520-1"></figure>
+
+
+
+<p>输入“Y”，确认进行安装</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-275" src="/wp-content/uploads/2024/07/20240625162944171930418415092-1.webp" width="854" height="368" alt="20240625162944171930418415092-1" title="20240625162944171930418415092-1"></figure>
+
+
+
+<p>会自动安装Docker应用</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-276" src="/wp-content/uploads/2024/07/20240625162945171930418519820-1.webp" width="640" height="305" alt="20240625162945171930418519820-1" title="20240625162945171930418519820-1"></figure>
+
+
+
+<p>安装完成，点击链接进入控制台</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-277" src="/wp-content/uploads/2024/07/20240625162946171930418664291-1.webp" width="613" height="244" alt="20240625162946171930418664291-1" title="20240625162946171930418664291-1"></figure>
+
+
+
+<p><strong>2.使用</strong>点击“同意，开始使用”</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-278" src="/wp-content/uploads/2024/07/20240625162947171930418770237-1.webp" width="1080" height="536" alt="20240625162947171930418770237-1" title="20240625162947171930418770237-1"></figure>
+
+
+
+<p>输入初始账号和密码，都是admin</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-279" src="/wp-content/uploads/2024/07/20240625162948171930418831269-1.webp" width="1080" height="582" alt="20240625162948171930418831269-1" title="20240625162948171930418831269-1"></figure>
+
+
+
+<p>进入面板，界面还是挺清爽的</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-281" src="/wp-content/uploads/2024/07/20240625162949171930418911261-1.webp" width="1080" height="536" alt="20240625162949171930418911261-1" title="20240625162949171930418911261-1"></figure>
+
+
+
+<p><strong>2.1.重置密码</strong>如果忘记密码可以根据下面提示进行操作，就可以重置密码了<br>如果提示密码不对</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-280" src="/wp-content/uploads/2024/07/20240625162949171930418971353-1.webp" width="900" height="636" alt="20240625162949171930418971353-1" title="20240625162949171930418971353-1"></figure>
+
+
+
+<p>点击下面“忘记密码”</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-282" src="/wp-content/uploads/2024/07/20240625162950171930419072191-1.webp" width="873" height="577" alt="20240625162950171930419072191-1" title="20240625162950171930419072191-1"></figure>
+
+
+
+<p>重置密码，输入下面命令：</p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted">docker&nbsp;exec&nbsp;safeline-mgt&nbsp;resetadmin</pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-283" src="/wp-content/uploads/2024/07/20240625162951171930419119762-1.webp" width="603" height="218" alt="20240625162951171930419119762-1" title="20240625162951171930419119762-1"></figure>
+
+
+
+<p>重新登录</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-284" src="/wp-content/uploads/2024/07/20240625162952171930419288336-1.webp" width="1020" height="486" alt="20240625162952171930419288336-1" title="20240625162952171930419288336-1"></figure>
+
+
+
+<p>点击“系统设置”</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-285" src="/wp-content/uploads/2024/07/20240625162953171930419393784-1.webp" width="1080" height="536" alt="20240625162953171930419393784-1" title="20240625162953171930419393784-1"></figure>
+
+
+
+<p>修改账户密码</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-286" src="/wp-content/uploads/2024/07/20240625162953171930419326740-1.webp" width="712" height="467" alt="20240625162953171930419326740-1" title="20240625162953171930419326740-1"></figure>
+
+
+
+<p><strong>2.2.添加站点</strong>这里我安装了一个nginx作为Web站点演示，因为雷池和nginx（防护的Web网站）是同一个服务器，而且是一个IP，所以需要注意下面设置的端口号不能重复</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-287" src="/wp-content/uploads/2024/07/20240625162955171930419574424-1.webp" width="778" height="101" alt="20240625162955171930419574424-1" title="20240625162955171930419574424-1"></figure>
+
+
+
+<p>填写端口号，到时候就是通过这个端口访问Web页面的了</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-288" src="/wp-content/uploads/2024/07/20240625162956171930419666431-1.webp" width="607" height="605" alt="20240625162956171930419666431-1" title="20240625162956171930419666431-1"></figure>
+
+
+
+<p>填写上游服务器（需要防护的Web网站）和备注</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-289" src="/wp-content/uploads/2024/07/20240625162957171930419718467-1.webp" width="593" height="589" alt="20240625162957171930419718467-1" title="20240625162957171930419718467-1"></figure>
+
+
+
+<p>这样就算添加成功了</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-290" src="/wp-content/uploads/2024/07/20240625162958171930419881184-1.webp" width="1080" height="277" alt="20240625162958171930419881184-1" title="20240625162958171930419881184-1"></figure>
+
+
+
+<p>浏览器访问8082端口，可以正常访问</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-291" src="/wp-content/uploads/2024/07/20240625162959171930419949218-1.webp" width="885" height="257" alt="20240625162959171930419949218-1" title="20240625162959171930419949218-1"></figure>
+
+
+
+<p>如果是需要https，需要自行添加证书</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-292" src="/wp-content/uploads/2024/07/20240625162959171930419983157-1.webp" width="1080" height="484" alt="20240625162959171930419983157-1" title="20240625162959171930419983157-1"></figure>
+
+
+
+<p>上传证书和私钥</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-293" src="/wp-content/uploads/2024/07/20240625163000171930420018711-1.webp" width="1080" height="729" alt="20240625163000171930420018711-1" title="20240625163000171930420018711-1"></figure>
+
+
+
+<p>勾选上SSL，选择证书</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-294" src="/wp-content/uploads/2024/07/20240625163001171930420186442-1.webp" width="1080" height="740" alt="20240625163001171930420186442-1" title="20240625163001171930420186442-1"></figure>
+
+
+
+<p>这样就可以使用HTTPS了</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-295" src="/wp-content/uploads/2024/07/20240625163002171930420244691-1.webp" width="895" height="257" alt="20240625163002171930420244691-1" title="20240625163002171930420244691-1"></figure>
+
+
+
+<p><strong>2.3.测试防护</strong>整体监测流程参考:<img loading="lazy" decoding="async" class="alignnone size-full wp-image-297" src="/wp-content/uploads/2024/07/20240625163004171930420482458-1.webp" width="590" height="1003" alt="20240625163004171930420482458-1" title="20240625163004171930420482458-1"><br>模拟 SQL 注入</p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted">http://&lt;IP或域名&gt;:&lt;端口&gt;/?id=1%20AND%201=1</pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-296" src="/wp-content/uploads/2024/07/20240625163005171930420586476-1.webp" width="1080" height="608" alt="20240625163005171930420586476-1" title="20240625163005171930420586476-1"></figure>
+
+
+
+<p>模拟 XSS</p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted">http://&lt;IP或域名&gt;:&lt;端口&gt;/?html=&lt;script&gt;alert(1)&lt;/script&gt;</pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-298" src="/wp-content/uploads/2024/07/20240625163006171930420679104-1.webp" width="1080" height="601" alt="20240625163006171930420679104-1" title="20240625163006171930420679104-1"></figure>
+
+
+
+<p><strong>2.4.防护配置</strong>这里我也不是太会用，简单截图<br>频率限制</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-299" src="/wp-content/uploads/2024/07/20240625163007171930420735261-1.webp" width="1080" height="611" alt="20240625163007171930420735261-1" title="20240625163007171930420735261-1"></figure>
+
+
+
+<p>自定义规则</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-300" src="/wp-content/uploads/2024/07/20240625163008171930420839125-1.webp" width="1080" height="451" alt="20240625163008171930420839125-1" title="20240625163008171930420839125-1"></figure>
+
+
+
+<p>语义分析</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-301" src="/wp-content/uploads/2024/07/20240625163009171930420958224-1.webp" width="1080" height="526" alt="20240625163009171930420958224-1" title="20240625163009171930420958224-1"></figure>
+
+
+
+<p>补充规则</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-302" src="/wp-content/uploads/2024/07/20240625163010171930421020774-1.webp" width="1080" height="526" alt="20240625163010171930421020774-1" title="20240625163010171930421020774-1"></figure>
+
+
+
+<p>通用配置</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-303" src="/wp-content/uploads/2024/07/20240625163012171930421259431-1.webp" width="1080" height="553" alt="20240625163012171930421259431-1" title="20240625163012171930421259431-1"></figure>
+
+
+
+<p><strong>2.5.卸载</strong>演示卸载雷池的正确方式<br>来到安装的路径，输入下面命令：</p>
+
+
+
+<ul class="wp-block-list">
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted">默认：cd&nbsp;/data/safeline我的:cd&nbsp;/mnt/user/appdata/safeline</pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-304" src="/wp-content/uploads/2024/07/20240625163013171930421375141-1.webp" width="611" height="194" alt="20240625163013171930421375141-1" title="20240625163013171930421375141-1"></figure>
+
+
+
+<p>停止容器</p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted">docker&nbsp;compose&nbsp;down</pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-305" src="/wp-content/uploads/2024/07/20240625163014171930421457436-1.webp" width="677" height="247" alt="20240625163014171930421457436-1" title="20240625163014171930421457436-1"></figure>
+
+
+
+<p>删除镜像</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-307" src="/wp-content/uploads/2024/07/20240625163015171930421596651-1.webp" width="852" height="468" alt="20240625163015171930421596651-1" title="20240625163015171930421596651-1"></figure>
+
+
+
+<p>删除安装目录</p>
+
+
+
+<ul class="wp-block-list">
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted">默认：cd&nbsp;/rm&nbsp;-rf&nbsp;/data/safeline我的：cd&nbsp;/rm&nbsp;-rf&nbsp;/mnt/user/appdata/safeline</pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-306" src="/wp-content/uploads/2024/07/20240625163016171930421692059-1.webp" width="612" height="168" alt="20240625163016171930421692059-1" title="20240625163016171930421692059-1"></figure>
+
+
+
+<p><strong>3.总结</strong>平时很少用这类应用，不过体验下来感觉还不错，初次上手简单，UI界面展示各类信息直观，推荐可以尝试一下。至于有没有什么很大的效果，因为我不太懂这方面，反正聊胜于无吧。<br>要说有什么麻烦的地方就是Docker，可以看到安装完成后，Docker界面多了几个应用。建议是要不然直接封装成一个all in one的Docker，要不然就是单独弄一个虚拟机镜像，这样会比较方便部署。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-309" src="/wp-content/uploads/2024/07/20240625163018171930421880032-1.webp" width="1080" height="608" alt="20240625163018171930421880032-1" title="20240625163018171930421880032-1"></figure>
+
+
+
+<p><strong>· END ·</strong></p>
+
+
+
+<p>参考链接：</p>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+https://waf-ce.chaitin.cn
+</div></figure>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+https://waf-ce.chaitin.cn/docs
+</div></figure>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+https://github.com/chaitin/SafeLine
+</div></figure>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+<iframe loading="lazy" src="//player.bilibili.com/player.html?aid=&#038;bvid=BV1fD421A7wL&#038;p=1" width="100%" height="500" frameborder="0" allowfullscreen></iframe>
+</div></figure>
+    </div>
+
+    <!-- 底部元信息 -->
+    <div class="post-footmeta mb-4">
+        <div class="row d-flex align-items-center">
+            <div class="col-md-6 col-12">
+                <div class="post-share justify-content-sm-start mb-3 mb-sm-0">
+                    <div class="post-btnmeta">
+                        <span class="post-like trans_2ms" :class="postMeta.postLike_on ? 'on' : ''" @click="_setlike"><i class="cxicon cxicon-zan-black"></i> <em style="font-style: normal" x-text="postMeta.postLike" x-show="postMeta.postLike !== 0"></em></span>
+                    </div>
+                    <i class="cxline-1"></i>
+                    <ul class="social-icons" x-data="{'postThumb':'/wp-content/uploads/2024/07/20240625162935171930417557417-1.png','postLink' : window.location.href, 'postTitle' : document.title}">
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微信" x-bind="weixinLink"><i class="cxicon cxicon-weixin"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微博" x-bind="weiboLink"><i class="cxicon cxicon-weibo"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到QQ" x-bind="qqLink"><i class="cxicon cxicon-qq"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-12 text-center text-md-end">
+                <div class="tags">
+                                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-author p-4 mt-5 flex-sm-row">
+        <div class="thumb"><a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=100&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=200&#038;d=mm&#038;r=g 2x" class="avatar avatar-100 photo" height="100" width="100" loading="lazy" decoding="async"></figure></a></div>        <div class="details ps-sm-4 mt-3 mt-sm-0 text-sm-start">
+            <h4 class="name"><a href="/archives/author/guozhiman" title="文章作者 guozhiman" rel="author">guozhiman</a></h4>
+            <p>暂无介绍....</p>
+            <ul class="social-icons list-unstyled list-inline mb-0">
+                <!-- 社交信息 -->
+                <li class="list-inline-item">
+                    <a href="#"><i class="cxicon cxicon-weixin"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-weibo"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-qq"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <i class="cxline-1 ms-0 me-2"></i>
+                    <a href="/archives/author/guozhiman" class="author-link">TA的主页 <i class="cxicon cxicon-jtright font-inherit"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row nextprev-post-wrapper mb-4">
+        <div class="col-md-6 col-12 mb-3 mb-sm-0">
+            <div class="nextprev-post prev">
+                <span class="nextprev-text"> 上一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/32" rel="prev">Docker篇 | AnythingLLM 全方位AI应用程序</a>                </h5>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="nextprev-post next text-sm-end">
+                <span class="nextprev-text">下一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/128" rel="next">PVE 8.0 (Proxmox) 虚拟机系统 &#8211; 开源免费！安装多款不同系统 / 打造万能主机</a>                </h5>
+            </div>
+        </div>
+    </div>
+
+    <section class="comments">
+        <!-- 评论区代码 -->
+    </section>
+
+    <div class="mso nobg">
+        <div class="module-tit item-center noborder">
+            <h3 style="font-size:1rem">
+<i class="cxline"></i>延伸阅读:</h3>
+            <p></p>
+        </div>
+        <div class="module-content">
+        <div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/34">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/20240625162935171930417557417-1.png" width="280" height="180" alt="Docker篇 | 雷池WAF ​Web应用防火墙">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/docker" class="sort sort-4">Docker</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/34">Docker篇 | 雷池WAF ​Web应用防火墙</a></h5>
+            <p class="pdesc">该篇教程主要讲解雷池WAF的简单使用雷池WAF:一款简单、轻便、安全的WAF，保护您的web应用程序免受常见攻击和利用。...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月21日</span>                </div>
+                <div class="r">
+                    <a href="/archives/34" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/32">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/20240706105849172023472946508-1.webp" width="280" height="180" alt="Docker篇 | AnythingLLM 全方位AI应用程序">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/docker" class="sort sort-4">Docker</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/32">Docker篇 | AnythingLLM 全方位AI应用程序</a></h5>
+            <p class="pdesc">该篇教程主要讲解AnythingLLM的安装和简单使用AnythingLLM：这是一个全栈应用程序，可以将任何文档、资源...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月21日</span>                </div>
+                <div class="r">
+                    <a href="/archives/32" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>        </div>
+    </div>
+</article>                    </div>
+                </div>
+            </div>
+            
+            <div class="col-right" id="sidebar">
+    <div class="rowright">
+        <aside class="side-area">
+            <div class="widget widget_block widget_search"><form role="search" method="get" action="/" class="wp-block-search__button-outside wp-block-search__text-button wp-block-search">
+<label class="wp-block-search__label" for="wp-block-search__input-1">搜索</label><div class="wp-block-search__inside-wrapper ">
+<input class="wp-block-search__input" id="wp-block-search__input-1" placeholder="" value="" type="search" name="s" required><button aria-label="搜索" class="wp-block-search__button wp-element-button" type="submit">搜索</button>
+</div>
+</form></div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期文章</h2>
+
+
+<ul class="wp-block-latest-posts__list wp-block-latest-posts">
+<li><a class="wp-block-latest-posts__post-title" href="/archives/417">OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/415">GitHub上的宝藏：一套免费、开源的医院管理系统</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/413">开源远程桌面，TeamViewer 的替代品</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/411">免费！小区物业管理系统 开源</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/409">一款开源的设备资产管理系统</a></li>
+</ul>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期评论</h2>
+
+
+<div class="no-comments wp-block-latest-comments">没有评论可显示。</div>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">分类</h2>
+
+
+<ul class="wp-block-categories-list wp-block-categories">	<li class="cat-item cat-item-4">
+<a href="/archives/category/docker">Docker</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/archives/category/caozuoxitong/windows">Win系统</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/archives/category/qianduan">前端</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/archives/category/kaiyuan">开源</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/archives/category/meirifenxiang">每日分享</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/archives/category/wangluoanquan">网络安全</a>
+</li>
+</ul>
+</div></div>
+</div>        </aside>
+    </div>
+</div>        </div>
+    </div>
+</section>
+<!-- 3.end -->
+
+        </main><!-- main.end -->
+
+        <footer class="footer-s1">
+            <div class="linebox bg-auto"></div>
+            <div class="foottop">
+                <div class="container-xl">
+                    <div class="footmain-box">
+                        <div class="aboutus_link">
+<a href="https://www.baidu.com/" target="_blank">百度一下</a><a href="https://yunsuo.qianxin.com/" target="_blank">云锁</a><a href="https://www.d99net.net/" target="_blank">D盾</a>
+</div>
+<div class="footer-desc">免责声明：本网站部分内容由用户自行上传，如权利人发现存在误传其作品情形，请及时与本站联系。</div>
+<div class="foot-copyright">郭智满 © 2024. All Rights Reserved</div>                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- 弹出层代码 -->
+        <div class="popbg-box trans_2ms" :class="{'visible': popBgshow}" @click="popBgshow = moibleMenu = false"></div>
+        <div class="search-popup trans_2ms" :class="{'visible': searchPopup}">
+            <button type="button" class="btn-close " aria-label="Close" @click="searchPopup = false"></button>
+            <div class="search-content">
+                <div class="search-form-box">
+                    <form class="d-flex search-form" method="get" action="">
+                        <input class="form-control me-2" placeholder="搜索并按回车键..." type="text" name="s" id="search" value="" aria-label="搜索">
+                        <button class="btn btn-default btn-lg" type="submit" style="padding: 9.5px 36px;"><i class="cxicon cxicon-search"></i></button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <!-- .end -->
+        </div>
+        <!--.sit-wrapper-->
+        <script type="text/javascript" src="/wp-content/themes/meteor/assets/js/swiper-bundle.min.js?ver=1.2" id="cxm2-swiper-js"></script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/plugins.min.js?ver=1.2" id="cxm2-plugins-js"></script>
+<script type="text/javascript" id="cxm2-alpine-js-extra">
+/* <![CDATA[ */
+var cxjs = {"homeurl":"","jsonapi":"\/wp-json\/cxv1\/","themedir":"\/wp-content\/themes\/meteor","ajaxurl":"\/wp-admin\/admin-ajax.php","postId":"34"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/alpine.min.js?ver=3.13.10" id="cxm2-alpine-js"></script>
+        </body>
+
+        </html>

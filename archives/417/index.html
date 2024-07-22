@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="max-image-preview:large">
+<title>OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http - 郭智满的部落！</title>
+<meta name="description" content="概述 Lua-resty-http 是一个基于 OpenResty 的 Lua 库，是 OpenResty 项目中一个非常有用的模块，用于从 Nginx 服务中发起 HTTP 请求。OpenResty 是一个基于 Ngi...">
+<link rel="dns-prefetch" href="//at.alicdn.com">
+<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=6.6" type="text/css" media="all">
+<style id="classic-theme-styles-inline-css" type="text/css">/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}</style>
+<style id="global-styles-inline-css" type="text/css">:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
+:root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}</style>
+<link rel="stylesheet" id="cxm2-bootstrap-css" href="/wp-content/themes/meteor/assets/css/bootstrap.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-swiper-css" href="/wp-content/themes/meteor/assets/css/swiper-bundle.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-icons-css" href="//at.alicdn.com/t/c/font_1989294_lbwlt58uzfn.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-main-css" href="/wp-content/themes/meteor/style.css?ver=1.2" type="text/css" media="all">
+<style id="cxm2-main-inline-css" type="text/css">:root, [data-bs-theme=light]{ --bs-link-hover-color:#fe4f70; --cbg-color:#fe5872; --cbg-gradient:var(--cx-gradient-rad); } [data-bs-theme=dark] { --bs-link-hover-color: #fe4f70; }</style>
+<link rel="canonical" href="/archives/417">
+</head>
+
+<body class="post-template-default single single-post postid-417 single-format-standard cxtheme-body cxtheme-width-theme" x-data="MeteorData" :data-bs-theme="darkMode ? 'dark' : ''" :class="{'dark': darkMode,'overflow-y-hidden':popBgshow || searchPopup}">
+    <div class="site-wrapper">
+        <header class="header-s1" :class="{'onfixed' : searchPopup}">
+            <div class="headnav">
+                <div class="container-xl h-container">
+                    <div class="cxlogo">
+                                                <a href="/">
+                            <img src="http://www.guozhiman.top/wp-content/uploads/2024/07/202406201718847016352278-1.png" alt="郭智满的部落！" class="c-light" width="120" height="60">
+                            <img src="http://www.guozhiman.top/wp-content/uploads/2024/07/202406201718847016352278-2.png" alt="郭智满的部落！" class="c-dark" width="120" height="60">
+                        </a>
+                    </div>
+                    <nav class="head-menu d-lg-flex">
+                        <ul id="menu-main-menu" class="navbar-nav">
+                        <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                        </ul>
+                    </nav>
+                    <div class="header-r">
+                        <ul class="h-btnbox sm-cnone">
+                            <li class="list-inline-item">
+                                <a href="/archives/417">
+                                    <i class="cxicon cxicon-ranking"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="javascript:;" @click="darkMode = !darkMode;localStorage.setItem('darkMode', darkMode);">
+                                    <i class="cxicon cxicon-sunlight" :class="{'d-none':darkMode}"></i>
+                                    <i class="cxicon cxicon-moon" :class="{'d-none':!darkMode}"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="h-buttons">
+                            <button type="button" class="search btn-default icon-button" @click="searchPopup = !searchPopup" title="Search Btn">
+                                <i class="cxicon cxicon-search font-inherit" :class=" searchPopup ? 'cxicon-error' : 'cxicon-search'"></i>
+                            </button>
+                            <!-- 移动端菜单 -->
+                            <button type="button" class="search btn-default icon-button" @click="moibleMenu = popBgshow = true" title="Menu Btn">
+                                <i class="cxicon cxicon-menu3 font-inherit"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>            
+        </header><!-- header.end-->
+        <!-- Moible Nav -->
+        <div class="mobile-navbox trans_2ms" :class="{'visible': moibleMenu}">
+            <button type="button" class="btn-close" aria-label="关闭" @click="popBgshow = moibleMenu = false"></button>
+            <div class="m-menulogo p-4 pt-3"></div>
+            <div class="m-navbox p-4 pt-0">
+                <ul id="moible-menu" class="m-nav pe-4">
+                <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                </ul>
+            </div>
+        </div>
+        <!-- MN.end -->
+        
+
+        <main class="main-container" role="main">
+<div class="banner trem-banner mb-4">
+    <div class="container-xl">
+        
+            <nav class="breadcrumbs" aria-label="面包屑导航">
+                <ol class="breadcrumb flex-nowrap">
+                
+        <li class="item-home flex-shrink-0">
+            <a href="/" title="郭智满的部落！">
+                <span>首页</span>
+            </a>
+        </li>
+
+        <li class="item-category flex-shrink-0">
+            <a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" title="技术文章">
+                <span>技术文章</span>
+            </a>
+        </li>
+
+        <li class="item-current line-one pe-4">
+            <a href="/archives/417" title="OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http">
+                <span>OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http</span>
+            </a>
+        </li>
+                </ol>
+            </nav>
+                </div>
+</div>
+<!-- 3 -->
+<section class="wi widget-coltow">
+    <div class="container-xl">
+        <div class="row cxrow">
+            <div class="col-left">
+                <div class="rowleft">
+                    <div class="main-content pe-xl-4">
+                        <article id="post-43" class="post is-single post-content status-publish" x-data="cxm2_Postmeta">
+    <!-- 文章标题 -->
+    <header class="post-header">
+        <h1 class="post-title mt-3 mb-4 fs-2">OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http</h1>        <!-- 文章元信息（如作者、发布时间、分类、标签等） -->
+        <div class="article-meta">
+<ul class="meta-itembox">
+<li class="list-inline-item"><a class="author me-0" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" decoding="async"></figure>guozhiman</a></li>
+<li class="list-inline-item"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" rel="category tag">技术文章</a></li>
+<li class="list-inline-item">2024年7月22日</li>
+</ul>
+</div>    </header>
+
+    <!-- 文章正文 -->
+    <div class="article-body mb-4">
+        
+<h2 class="wp-block-heading">概述</h2>
+
+
+
+<p>Lua-resty-http 是一个基于 OpenResty 的 Lua 库，是 OpenResty 项目中一个非常有用的模块，用于从 Nginx 服务中发起 HTTP 请求。OpenResty 是一个基于 Nginx 与 LuaJIT 的全功能 Web 平台，它集成了大量精心设计的 Nginx 模块，以及大量的 Lua 库。</p>
+
+
+
+<p>lua-resty-http 库允许你在 OpenResty 的 Lua 环境中轻松地发送 HTTP 请求，它提供了一个简单易用的 API 来处理 HTTP 请求和响应。这使得在 Nginx 配置文件中编写 Lua 脚本来处理 HTTP 请求和响应成为可能，从而可以构建高性能的 Web 应用和服务。如果你正在使用 OpenResty 并需要在 Nginx 配置中发起 HTTP 请求，lua-resty-http 是一个非常合适的选择。</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p>项目地址：https://github.com/ledgetech/lua-resty-http</p>
+</blockquote>
+
+
+
+<h2 class="wp-block-heading">特性</h2>
+
+
+
+<ul class="wp-block-list">
+<li>
+<strong>异步非阻塞</strong>：该库利用 nginx 的事件循环模型，让 HTTP 请求在后台执行，不会阻塞主线程，提高了整体性能。</li>
+
+
+
+<li>
+<strong>连接池管理</strong>：它支持连接池的创建与管理，可以有效地复用 TCP 连接，减少握手延迟，提高服务响应速度。</li>
+
+
+
+<li>
+<strong>丰富的 API 设计</strong>：Lua-Resty-HTTP 提供了一套完整的 API，包括设置超时、指定代理、添加请求头、处理重定向、自定义认证等，使得开发过程更为便捷。</li>
+
+
+
+<li>
+<strong>SSL/TLS 支持</strong>：内置 SSL/TLS 功能，支持 HTTPS 请求，且允许自定义证书和密钥。</li>
+
+
+
+<li>
+<strong>错误处理</strong>：提供了详细的错误信息，便于调试和故障排除。</li>
+</ul>
+
+
+
+<h2 class="wp-block-heading">应用场景</h2>
+
+
+
+<ul class="wp-block-list">
+<li>数据获取：从 RESTful API 获取 JSON 或其他格式的数据。</li>
+
+
+
+<li>API 调用：在你的 OpenResty 应用中调用外部 Web 服务。</li>
+
+
+
+<li>自动化测试：在 Lua 测试脚本中模拟 HTTP 请求，验证服务行为。</li>
+
+
+
+<li>日志报告：向远程服务器发送日志或统计信息。</li>
+
+
+
+<li>缓存刷新：根据 HTTP 响应自动更新本地缓存。</li>
+</ul>
+
+
+
+<h2 class="wp-block-heading">使用</h2>
+
+
+
+<h3 class="wp-block-heading">安装</h3>
+
+
+
+<p>这里通过OPM工具包安装，更多请查看&nbsp;上一篇</p>
+
+
+
+<pre class="wp-block-code"><code>opm&nbsp;get&nbsp;ledgetech/lua-resty-http</code></pre>
+
+
+
+<h3 class="wp-block-heading">基础使用</h3>
+
+
+
+<p>使用 Lua-resty-http 发送 HTTP 请求的一个基本示例</p>
+
+
+
+<pre class="wp-block-code"><code>local&nbsp;httpc&nbsp;=&nbsp;require("resty.http").new()<br><br>--&nbsp;Single-shot&nbsp;requests&nbsp;use&nbsp;the&nbsp;`request_uri`&nbsp;interface.<br>local&nbsp;res,&nbsp;err&nbsp;=&nbsp;httpc:request_uri("http://example.com/helloworld",&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;method&nbsp;=&nbsp;"POST",<br>&nbsp;&nbsp;&nbsp;&nbsp;body&nbsp;=&nbsp;"a=1&amp;b=2",<br>&nbsp;&nbsp;&nbsp;&nbsp;headers&nbsp;=&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#91;"Content-Type"]&nbsp;=&nbsp;"application/x-www-form-urlencoded",<br>&nbsp;&nbsp;&nbsp;&nbsp;},<br>})<br>if&nbsp;not&nbsp;res&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;ngx.log(ngx.ERR,&nbsp;"request&nbsp;failed:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;return<br>end<br><br>--&nbsp;At&nbsp;this&nbsp;point,&nbsp;the&nbsp;entire&nbsp;request&nbsp;/&nbsp;response&nbsp;is&nbsp;complete&nbsp;and&nbsp;the&nbsp;connection<br>--&nbsp;will&nbsp;be&nbsp;closed&nbsp;or&nbsp;back&nbsp;on&nbsp;the&nbsp;connection&nbsp;pool.<br><br>--&nbsp;The&nbsp;`res`&nbsp;table&nbsp;contains&nbsp;the&nbsp;expeected&nbsp;`status`,&nbsp;`headers`&nbsp;and&nbsp;`body`&nbsp;fields.<br>local&nbsp;status&nbsp;=&nbsp;res.status<br>local&nbsp;length&nbsp;=&nbsp;res.headers&#91;"Content-Length"]<br>local&nbsp;body&nbsp;&nbsp;&nbsp;=&nbsp;res.body</code></pre>
+
+
+
+<h3 class="wp-block-heading">进阶使用</h3>
+
+
+
+<p><code>openresty.tinywan.com.conf</code>配置文件</p>
+
+
+
+<pre class="wp-block-code"><code>server&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;listen&nbsp;80;<br>&nbsp;&nbsp;&nbsp;&nbsp;server_name&nbsp;openresty.tinywan.com;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;location&nbsp;/lua_http_test&nbsp;{&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default_type&nbsp;"text/html";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lua_code_cache&nbsp;off;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content_by_lua_file&nbsp;conf/lua/lua_http_test.lua;<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>}</code></pre>
+
+
+
+<p><code>lua_http_test.lua</code>&nbsp;脚本</p>
+
+
+
+<pre class="wp-block-code"><code>local&nbsp;httpc&nbsp;=&nbsp;require("resty.http").new()<br><br>--&nbsp;Single-shot&nbsp;requests&nbsp;use&nbsp;the&nbsp;`request_uri`&nbsp;interface.<br>local&nbsp;res,&nbsp;err&nbsp;=&nbsp;httpc:request_uri("https://www.workerman.net/u/Tinywan",&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;method&nbsp;=&nbsp;"GET",<br>&nbsp;&nbsp;&nbsp;&nbsp;body&nbsp;=&nbsp;"name=Tinywan&amp;age=24",<br>&nbsp;&nbsp;&nbsp;&nbsp;headers&nbsp;=&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#91;"Content-Type"]&nbsp;=&nbsp;"application/x-www-form-urlencoded",<br>&nbsp;&nbsp;&nbsp;&nbsp;},<br>&nbsp;&nbsp;&nbsp;&nbsp;ssl_verify&nbsp;=&nbsp;false,<br>})<br>if&nbsp;not&nbsp;res&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;ngx.log(ngx.ERR,&nbsp;"request&nbsp;failed:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;return<br>end<br><br>local&nbsp;status&nbsp;=&nbsp;res.status<br>local&nbsp;length&nbsp;=&nbsp;res.headers&#91;"Content-Length"]<br>local&nbsp;body&nbsp;&nbsp;&nbsp;=&nbsp;res.body<br>ngx.say(res.body)</code></pre>
+
+
+
+<p>通过curl脚本测试请求打印结果</p>
+
+
+
+<pre class="wp-block-code"><code>$&nbsp;curl&nbsp;-i&nbsp;http://openresty.tinywan.com/lua_http_test<br>HTTP/1.1&nbsp;200&nbsp;OK<br>Server:&nbsp;openresty/1.17.8.2<br>Date:&nbsp;Wed,&nbsp;17&nbsp;Jul&nbsp;2024&nbsp;09:42:10&nbsp;GMT<br>Content-Type:&nbsp;text/html;&nbsp;charset=utf-8<br>Transfer-Encoding:&nbsp;chunked<br>Connection:&nbsp;keep-alive<br>Vary:&nbsp;Accept-Encoding<br><br>&lt;!doctype&nbsp;html&gt;<br>&lt;html&nbsp;lang="zh-cn"&gt;<br>&lt;head&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta&nbsp;charset="utf-8"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta&nbsp;http-equiv="X-UA-Compatible"&nbsp;content="IE=edge"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta&nbsp;name="viewport"&nbsp;content="width=device-width,&nbsp;initial-scale=1,&nbsp;shrink-to-fit=no"&gt;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;link&nbsp;rel="shortcut&nbsp;icon"&nbsp;href="/favicon.ico"&nbsp;/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;link&nbsp;href="https://cdn.workerman.net/css/bootstrap.min.css?v=20211126"&nbsp;rel="stylesheet"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;link&nbsp;href="https://cdn.workerman.net/css/main.css?v=20240705"&nbsp;rel="stylesheet"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;script&nbsp;src="https://cdn.workerman.net/js/jquery.min.js"&gt;&lt;/script&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;script&nbsp;src="https://cdn.workerman.net/js/bootstrap.min.js?v=20211126"&gt;&lt;/script&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;script&nbsp;src="https://cdn.workerman.net/js/functions.js?v=20220507"&gt;&lt;/script&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;script&nbsp;type="text/javascript"&nbsp;charset="UTF-8"&nbsp;src="https://cdn.wwads.cn/js/makemoney.js"&nbsp;async&gt;&lt;/script&gt;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;Tinywan的主页-分享-workerman社区&lt;/title&gt;<br><br>&lt;/head&gt;<br>...<br>&lt;/body&gt;<br>&lt;/html&gt;</code></pre>
+
+
+
+<h3 class="wp-block-heading">项目应用</h3>
+
+
+
+<pre class="wp-block-code"><code>--&#91;&#91;--------------------------------------------------------&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>*&nbsp;|&nbsp;&nbsp;Copyright&nbsp;(C)&nbsp;Shaobo&nbsp;Wan&nbsp;(Tinywan)<br>*&nbsp;|&nbsp;&nbsp;Origin:&nbsp;开源技术小栈<br>*&nbsp;|--------------------------------------------------------&nbsp;<br>--]]<br><br>local&nbsp;helper&nbsp;=&nbsp;require&nbsp;"vendor.helper"<br>local&nbsp;redis&nbsp;=&nbsp;require&nbsp;"resty.redis"<br>local&nbsp;resty_lock&nbsp;=&nbsp;require&nbsp;"resty.lock"<br>local&nbsp;http&nbsp;=&nbsp;require&nbsp;"resty.http"<br>local&nbsp;log&nbsp;=&nbsp;ngx.log<br>local&nbsp;ERR&nbsp;=&nbsp;ngx.ERR<br>local&nbsp;live_ngx_cache&nbsp;=&nbsp;ngx.shared.live_ngx_cache<br>--&nbsp;非error&nbsp;日志开关&nbsp;1:开启，0:关闭<br>local&nbsp;log_switch&nbsp;=&nbsp;1<br><br>local&nbsp;redis_host&nbsp;=&nbsp;"127.0.0.1"<br>local&nbsp;redis_port&nbsp;=&nbsp;6379<br>local&nbsp;redis_auth&nbsp;=&nbsp;"123456"<br>local&nbsp;redis_timeout&nbsp;=&nbsp;1000<br><br>--&nbsp;set&nbsp;ngx.cache<br>local&nbsp;function&nbsp;set_cache(key,&nbsp;value,&nbsp;exptime)<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;exptime&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exptime&nbsp;=&nbsp;0<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;succ,&nbsp;err,&nbsp;forcible&nbsp;=&nbsp;live_ngx_cache:set(key,&nbsp;value,&nbsp;exptime)<br>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;succ<br>end<br><br>--&nbsp;close&nbsp;redis<br>local&nbsp;function&nbsp;close_redis(red)<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;red&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;--释放连接(连接池实现)<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;pool_max_idle_time&nbsp;=&nbsp;10000&nbsp;--毫秒<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;pool_size&nbsp;=&nbsp;100&nbsp;--连接池大小<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;ok,&nbsp;err&nbsp;=&nbsp;red:set_keepalive(pool_max_idle_time,&nbsp;pool_size)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;ok&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"set&nbsp;redis&nbsp;keepalive&nbsp;error&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>end<br><br>--&nbsp;read&nbsp;redis<br>local&nbsp;function&nbsp;read_redis(_host,&nbsp;_port,&nbsp;_auth,&nbsp;keys)<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;red&nbsp;=&nbsp;redis:new()<br>&nbsp;&nbsp;&nbsp;&nbsp;red:set_timeout(redis_timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;ok,&nbsp;err&nbsp;=&nbsp;red:connect(_host,&nbsp;_port)<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;ok&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"connect&nbsp;to&nbsp;redis&nbsp;error&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;请注意这里&nbsp;auth&nbsp;的调用过程<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;count<br>&nbsp;&nbsp;&nbsp;&nbsp;count,&nbsp;err&nbsp;=&nbsp;red:get_reused_times()<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;0&nbsp;==&nbsp;count&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ok,&nbsp;err&nbsp;=&nbsp;red:auth(_auth)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;ok&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;auth:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;close_redis(red)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;elseif&nbsp;err&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;get&nbsp;reused&nbsp;times:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;close_redis(red)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;resp&nbsp;=&nbsp;nil<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;<em>#keys&nbsp;==&nbsp;1&nbsp;then</em><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resp,&nbsp;err&nbsp;=&nbsp;red:get(keys&#91;1])<br>&nbsp;&nbsp;&nbsp;&nbsp;else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resp,&nbsp;err&nbsp;=&nbsp;red:mget(keys)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;resp&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;keys&#91;1]&nbsp;..&nbsp;"&nbsp;get&nbsp;redis&nbsp;content&nbsp;error&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;close_redis(red)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;resp&nbsp;==&nbsp;ngx.null&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resp&nbsp;=&nbsp;nil<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;close_redis(red)<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;log_switch&nbsp;==&nbsp;1&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"&#91;2]&nbsp;&#91;read_redis]&nbsp;content&nbsp;from&nbsp;redis.cache&nbsp;&nbsp;id&nbsp;=&nbsp;"&nbsp;..&nbsp;keys&#91;1])&nbsp;--&nbsp;tag&nbsp;data&nbsp;origin<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;resp<br>end<br><br>--&nbsp;write&nbsp;redis<br>local&nbsp;function&nbsp;write_redis(_host,&nbsp;_port,&nbsp;_auth,&nbsp;keys,&nbsp;values)<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;red&nbsp;=&nbsp;redis:new()<br>&nbsp;&nbsp;&nbsp;&nbsp;red:set_timeout(redis_timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;ok,&nbsp;err&nbsp;=&nbsp;red:connect(_host,&nbsp;_port)<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;ok&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"connect&nbsp;to&nbsp;redis&nbsp;error&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;count<br>&nbsp;&nbsp;&nbsp;&nbsp;count,&nbsp;err&nbsp;=&nbsp;red:get_reused_times()<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;0&nbsp;==&nbsp;count&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ok,&nbsp;err&nbsp;=&nbsp;red:auth(_auth)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;ok&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;auth:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;close_redis(red)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;elseif&nbsp;err&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;get&nbsp;reused&nbsp;times:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;close_redis(red)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;set&nbsp;data<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;resp&nbsp;=&nbsp;nil<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;<em>#keys&nbsp;==&nbsp;1&nbsp;then</em><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resp,&nbsp;err&nbsp;=&nbsp;red:set(keys&#91;1],&nbsp;values)<br>&nbsp;&nbsp;&nbsp;&nbsp;else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resp,&nbsp;err&nbsp;=&nbsp;red:mset(keys,&nbsp;values)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;resp&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"set&nbsp;redis&nbsp;live&nbsp;error&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close_redis(red)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;close_redis(red)<br>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;resp<br>end<br><br>--&nbsp;get&nbsp;ngx.cache<br>--&#91;1]即使发生其他一些不相关的错误，您也需要尽快解除锁定。<br>--&#91;2]在释放锁之前，您需要从后端获得的结果更新缓存，以便其他已经等待锁定的线程在获得锁定后才能获得缓存值。<br>--&#91;3]当后端根本没有返回任何值时，我们应该通过将一些存根值插入缓存来仔细处理。<br>local&nbsp;function&nbsp;read_cache(key)<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;ngx_resp&nbsp;=&nbsp;nil<br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;获取共享内存上key对应的值。如果key不存在，或者key已经过期，将会返回nil；如果出现错误，那么将会返回nil以及错误信息。<br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;step&nbsp;1<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;val,&nbsp;err&nbsp;=&nbsp;live_ngx_cache:get(key)<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;val&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;log_switch&nbsp;==&nbsp;1&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"&nbsp;&#91;1]&nbsp;&#91;read_ngx_cache]&nbsp;&nbsp;content&nbsp;from&nbsp;ngx.cache&nbsp;id&nbsp;=&nbsp;"&nbsp;..&nbsp;key)&nbsp;--&nbsp;tag&nbsp;data&nbsp;origin<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;val<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;err&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;get&nbsp;key&nbsp;from&nbsp;shm:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;cache&nbsp;miss!<br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;step&nbsp;2:<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;lock,&nbsp;err&nbsp;=&nbsp;resty_lock:new("cache_lock")&nbsp;--&nbsp;new&nbsp;resty.lock<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;lock&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;create&nbsp;lock&nbsp;&#91;cache_lock]&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;elapsed,&nbsp;err&nbsp;=&nbsp;lock:lock(key)&nbsp;--&nbsp;锁<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;elapsed&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;acquire&nbsp;the&nbsp;lock",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;lock&nbsp;successfully&nbsp;acquired!<br><br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;step&nbsp;3:<br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;someone&nbsp;might&nbsp;have&nbsp;already&nbsp;put&nbsp;the&nbsp;value&nbsp;into&nbsp;the&nbsp;cache&nbsp;,so&nbsp;we&nbsp;check&nbsp;it&nbsp;here&nbsp;again:<br>&nbsp;&nbsp;&nbsp;&nbsp;val,&nbsp;err&nbsp;=&nbsp;live_ngx_cache:get(key)<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;val&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;ok,&nbsp;err&nbsp;=&nbsp;lock:unlock()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;ok&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;unlock&nbsp;&#91;111]&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;val<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;---&nbsp;step&nbsp;4:<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;val&nbsp;=&nbsp;read_redis(redis_host,&nbsp;redis_port,&nbsp;redis_auth,&nbsp;{&nbsp;key&nbsp;})<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;val&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;ok,&nbsp;err&nbsp;=&nbsp;lock:unlock()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;ok&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;unlock&nbsp;&#91;222]&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;FIXME:&nbsp;we&nbsp;should&nbsp;handle&nbsp;the&nbsp;backend&nbsp;miss&nbsp;more&nbsp;carefully<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;here,&nbsp;like&nbsp;inserting&nbsp;a&nbsp;stub&nbsp;value&nbsp;into&nbsp;the&nbsp;cache.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"&#91;4]&nbsp;ngx.cache&nbsp;find&nbsp;redis&nbsp;cache&nbsp;no&nbsp;value&nbsp;found&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;ngx_resp<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;&#91;lock]&nbsp;update&nbsp;the&nbsp;shm&nbsp;cache&nbsp;with&nbsp;the&nbsp;newly&nbsp;fetched&nbsp;value<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;ok,&nbsp;err&nbsp;=&nbsp;live_ngx_cache:set(key,&nbsp;val,&nbsp;1)<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;ok&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;ok,&nbsp;err&nbsp;=&nbsp;lock:unlock()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;ok&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;unlock&nbsp;&#91;333]&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;update&nbsp;live_ngx_cache:&nbsp;&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;ok,&nbsp;err&nbsp;=&nbsp;lock:unlock()<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;ok&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"failed&nbsp;to&nbsp;unlock&nbsp;&#91;444]&nbsp;:&nbsp;",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;val<br>end<br><br>--------------&nbsp;read_http&nbsp;大并发采用&nbsp;resty.http&nbsp;，对于：ngx.location.capture&nbsp;慎用<br>local&nbsp;function&nbsp;read_http(id)<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;httpc&nbsp;=&nbsp;http.new()<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;resp,&nbsp;err&nbsp;=&nbsp;httpc:request_uri("https://live.tinywan.com",&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method&nbsp;=&nbsp;"GET",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;=&nbsp;"/api/live/"&nbsp;..&nbsp;id,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;headers&nbsp;=&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#91;"User-Agent"]&nbsp;=&nbsp;"Mozilla/5.0&nbsp;(Windows&nbsp;NT&nbsp;6.1;&nbsp;WOW64)&nbsp;AppleWebKit/537.36&nbsp;(KHTML,&nbsp;like&nbsp;Gecko)&nbsp;Chrome/40.0.2214.111&nbsp;Safari/537.36"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;})<br><br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;resp&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"resty.http&nbsp;API&nbsp;request&nbsp;error&nbsp;:",&nbsp;err)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;httpc:close()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;判断状态码<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;resp.status&nbsp;~=&nbsp;ngx.HTTP_OK&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"request&nbsp;error,&nbsp;status&nbsp;:",&nbsp;resp.status)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;resp.status&nbsp;==&nbsp;ngx.HTTP_FORBIDDEN&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"request&nbsp;error,&nbsp;status&nbsp;:",&nbsp;resp.status)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br><br>&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;backend&nbsp;not&nbsp;data&nbsp;判断api返回的状态码<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;status_code&nbsp;=&nbsp;helper.cjson_decode(resp.body)&#91;'code']<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;tonumber(status_code)&nbsp;==&nbsp;200&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;正常数据缓存到&nbsp;Redis&nbsp;数据缓存<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;live_info_key&nbsp;=&nbsp;"LIVE_TABLE:"&nbsp;..&nbsp;id<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;live_value&nbsp;=&nbsp;helper.cjson_decode(resp.body)&#91;'data']&nbsp;--&nbsp;解析的Lua自己的然后存储到Redis&nbsp;数据库中去(这里最好使用lua的json格式去写入)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;live_live_str&nbsp;=&nbsp;write_redis(redis_host,&nbsp;redis_port,&nbsp;redis_auth,&nbsp;{&nbsp;live_info_key&nbsp;},&nbsp;helper.cjson_encode(live_value))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;live_live_str&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"redis&nbsp;set&nbsp;info&nbsp;error:&nbsp;")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;log_switch&nbsp;==&nbsp;1&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"&#91;3]&nbsp;&#91;read_http]&nbsp;content&nbsp;from&nbsp;backend&nbsp;API&nbsp;id&nbsp;:&nbsp;"&nbsp;..&nbsp;id)&nbsp;--&nbsp;tag&nbsp;data&nbsp;origin<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;helper.cjson_encode(live_value)<br>&nbsp;&nbsp;&nbsp;&nbsp;else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;后端没有数据直接返回&nbsp;nil<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"&nbsp;&#91;read_http]&nbsp;backend&nbsp;API&nbsp;is&nbsp;not&nbsp;content&nbsp;return&nbsp;error_msg&nbsp;:&nbsp;"&nbsp;..&nbsp;helper.cjson_decode(resp.body)&#91;'msg'])&nbsp;--&nbsp;tag&nbsp;data&nbsp;origin<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>end<br><br>--&nbsp;业务逻辑处理<br>local&nbsp;function&nbsp;read_content(id)<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;cache_content&nbsp;=&nbsp;nil<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;live_key&nbsp;=&nbsp;"LIVE:"&nbsp;..&nbsp;id<br>&nbsp;&nbsp;&nbsp;&nbsp;local&nbsp;content&nbsp;=&nbsp;read_cache(live_key)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;content&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"&#91;5]&nbsp;redis&nbsp;not&nbsp;found&nbsp;content,&nbsp;back&nbsp;to&nbsp;backend&nbsp;API&nbsp;,&nbsp;id&nbsp;:&nbsp;",&nbsp;id)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content&nbsp;=&nbsp;read_http(id)<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;content&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"backend&nbsp;API&nbsp;not&nbsp;found&nbsp;content,&nbsp;id&nbsp;:&nbsp;",&nbsp;id)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;cache_content<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;tostring(content)&nbsp;==&nbsp;"false"&nbsp;then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log(ERR,&nbsp;"backend&nbsp;API&nbsp;content&nbsp;is&nbsp;false&nbsp;",&nbsp;id)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;cache_content<br>&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;content<br>end<br><br>local&nbsp;_M&nbsp;=&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;read_content&nbsp;=&nbsp;read_content<br>}<br><br>return&nbsp;_M</code></pre>
+
+
+
+<h2 class="wp-block-heading">渲染请求效果</h2>
+
+
+
+<figure class="wp-block-image"><img fetchpriority="high" decoding="async" class="alignnone size-full wp-image-419" src="/wp-content/uploads/2024/07/640-37.png" width="848" height="588" alt="640-37" title="640-37"></figure>
+
+
+
+<p></p>
+    </div>
+
+    <!-- 底部元信息 -->
+    <div class="post-footmeta mb-4">
+        <div class="row d-flex align-items-center">
+            <div class="col-md-6 col-12">
+                <div class="post-share justify-content-sm-start mb-3 mb-sm-0">
+                    <div class="post-btnmeta">
+                        <span class="post-like trans_2ms" :class="postMeta.postLike_on ? 'on' : ''" @click="_setlike"><i class="cxicon cxicon-zan-black"></i> <em style="font-style: normal" x-text="postMeta.postLike" x-show="postMeta.postLike !== 0"></em></span>
+                    </div>
+                    <i class="cxline-1"></i>
+                    <ul class="social-icons" x-data="{'postThumb':'/wp-content/uploads/2024/07/640-37.png','postLink' : window.location.href, 'postTitle' : document.title}">
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微信" x-bind="weixinLink"><i class="cxicon cxicon-weixin"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微博" x-bind="weiboLink"><i class="cxicon cxicon-weibo"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到QQ" x-bind="qqLink"><i class="cxicon cxicon-qq"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-12 text-center text-md-end">
+                <div class="tags">
+                                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-author p-4 mt-5 flex-sm-row">
+        <div class="thumb"><a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=100&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=200&#038;d=mm&#038;r=g 2x" class="avatar avatar-100 photo" height="100" width="100" decoding="async"></figure></a></div>        <div class="details ps-sm-4 mt-3 mt-sm-0 text-sm-start">
+            <h4 class="name"><a href="/archives/author/guozhiman" title="文章作者 guozhiman" rel="author">guozhiman</a></h4>
+            <p>暂无介绍....</p>
+            <ul class="social-icons list-unstyled list-inline mb-0">
+                <!-- 社交信息 -->
+                <li class="list-inline-item">
+                    <a href="#"><i class="cxicon cxicon-weixin"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-weibo"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-qq"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <i class="cxline-1 ms-0 me-2"></i>
+                    <a href="/archives/author/guozhiman" class="author-link">TA的主页 <i class="cxicon cxicon-jtright font-inherit"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row nextprev-post-wrapper mb-4">
+        <div class="col-md-6 col-12 mb-3 mb-sm-0">
+            <div class="nextprev-post prev">
+                <span class="nextprev-text"> 上一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/415" rel="prev">GitHub上的宝藏：一套免费、开源的医院管理系统</a>                </h5>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="nextprev-post next text-sm-end">
+                <span class="nextprev-text">下一篇</span>
+                <h5 class="post-title">
+                    没有啦 (Ｔ▽Ｔ)                </h5>
+            </div>
+        </div>
+    </div>
+
+    <section class="comments">
+        <!-- 评论区代码 -->
+    </section>
+
+    <div class="mso nobg">
+        <div class="module-tit item-center noborder">
+            <h3 style="font-size:1rem">
+<i class="cxline"></i>延伸阅读:</h3>
+            <p></p>
+        </div>
+        <div class="module-content">
+        <div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/417">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-37.png" width="280" height="180" alt="OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" class="sort sort-5">技术文章</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/417">OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http</a></h5>
+            <p class="pdesc">概述 Lua-resty-http 是一个基于 OpenResty 的 Lua 库，是 OpenResty 项目中一个非...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/417" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/407">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-2.jpeg" width="280" height="180" alt="树莓派 4安装 OpenWrt">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" class="sort sort-5">技术文章</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/407">树莓派 4安装 OpenWrt</a></h5>
+            <p class="pdesc">树莓派4B板子上的各个部件：树莓派4B刷OpenWRT成为软路由后：我的采购清单： 要比较完美的在树莓派上安装Openw...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/407" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/405">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-10.jpeg" width="280" height="180" alt="带有 LXD 和 Multipass 的工作站虚拟机">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" class="sort sort-5">技术文章</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/405">带有 LXD 和 Multipass 的工作站虚拟机</a></h5>
+            <p class="pdesc">目录 介绍 安装 / 分配 使用 Multipass 按需获取 Ubuntu LXD……用于虚拟机？ LXD 桌面虚拟机...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/405" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/403">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/themes/meteor/assets/images/nothumb.png" width="280" height="180" alt="在 x86 上构建 Linux L3 交换机/路由器">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0" class="sort sort-5">技术文章</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/403">在 x86 上构建 Linux L3 交换机/路由器</a></h5>
+            <p class="pdesc">第 1 部分 - 介绍 1.&nbsp;构建 L3 交换机的教程都提供了什么内容？ 坦白地说，什么都没有。但是，如果您想...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/403" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>        </div>
+    </div>
+</article>                    </div>
+                </div>
+            </div>
+            
+            <div class="col-right" id="sidebar">
+    <div class="rowright">
+        <aside class="side-area">
+            <div class="widget widget_block widget_search"><form role="search" method="get" action="/" class="wp-block-search__button-outside wp-block-search__text-button wp-block-search">
+<label class="wp-block-search__label" for="wp-block-search__input-1">搜索</label><div class="wp-block-search__inside-wrapper ">
+<input class="wp-block-search__input" id="wp-block-search__input-1" placeholder="" value="" type="search" name="s" required><button aria-label="搜索" class="wp-block-search__button wp-element-button" type="submit">搜索</button>
+</div>
+</form></div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期文章</h2>
+
+
+<ul class="wp-block-latest-posts__list wp-block-latest-posts">
+<li><a class="wp-block-latest-posts__post-title" href="/archives/417">OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/415">GitHub上的宝藏：一套免费、开源的医院管理系统</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/413">开源远程桌面，TeamViewer 的替代品</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/411">免费！小区物业管理系统 开源</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/409">一款开源的设备资产管理系统</a></li>
+</ul>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期评论</h2>
+
+
+<div class="no-comments wp-block-latest-comments">没有评论可显示。</div>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">分类</h2>
+
+
+<ul class="wp-block-categories-list wp-block-categories">	<li class="cat-item cat-item-4">
+<a href="/archives/category/docker">Docker</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/archives/category/caozuoxitong/windows">Win系统</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/archives/category/qianduan">前端</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/archives/category/kaiyuan">开源</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/archives/category/meirifenxiang">每日分享</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/archives/category/wangluoanquan">网络安全</a>
+</li>
+</ul>
+</div></div>
+</div>        </aside>
+    </div>
+</div>        </div>
+    </div>
+</section>
+<!-- 3.end -->
+
+        </main><!-- main.end -->
+
+        <footer class="footer-s1">
+            <div class="linebox bg-auto"></div>
+            <div class="foottop">
+                <div class="container-xl">
+                    <div class="footmain-box">
+                        <div class="aboutus_link">
+<a href="https://www.baidu.com/" target="_blank">百度一下</a><a href="https://yunsuo.qianxin.com/" target="_blank">云锁</a><a href="https://www.d99net.net/" target="_blank">D盾</a>
+</div>
+<div class="footer-desc">免责声明：本网站部分内容由用户自行上传，如权利人发现存在误传其作品情形，请及时与本站联系。</div>
+<div class="foot-copyright">郭智满 © 2024. All Rights Reserved</div>                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- 弹出层代码 -->
+        <div class="popbg-box trans_2ms" :class="{'visible': popBgshow}" @click="popBgshow = moibleMenu = false"></div>
+        <div class="search-popup trans_2ms" :class="{'visible': searchPopup}">
+            <button type="button" class="btn-close " aria-label="Close" @click="searchPopup = false"></button>
+            <div class="search-content">
+                <div class="search-form-box">
+                    <form class="d-flex search-form" method="get" action="">
+                        <input class="form-control me-2" placeholder="搜索并按回车键..." type="text" name="s" id="search" value="" aria-label="搜索">
+                        <button class="btn btn-default btn-lg" type="submit" style="padding: 9.5px 36px;"><i class="cxicon cxicon-search"></i></button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <!-- .end -->
+        </div>
+        <!--.sit-wrapper-->
+        <script type="text/javascript" src="/wp-content/themes/meteor/assets/js/swiper-bundle.min.js?ver=1.2" id="cxm2-swiper-js"></script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/plugins.min.js?ver=1.2" id="cxm2-plugins-js"></script>
+<script type="text/javascript" id="cxm2-alpine-js-extra">
+/* <![CDATA[ */
+var cxjs = {"homeurl":"","jsonapi":"\/wp-json\/cxv1\/","themedir":"\/wp-content\/themes\/meteor","ajaxurl":"\/wp-admin\/admin-ajax.php","postId":"417"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/alpine.min.js?ver=3.13.10" id="cxm2-alpine-js"></script>
+        </body>
+
+        </html>

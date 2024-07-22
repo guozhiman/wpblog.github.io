@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="max-image-preview:large">
+<title>GitHub上的宝藏：一套免费、开源的医院管理系统 - 郭智满的部落！</title>
+<meta name="description" content="今天分享一套开源医院管理系统 源代码： http://www.gitpp.com/zlcj/hospital-management-system 使用 MySQL、Php 和 Bootstrap 的医院管理系统 功能 医...">
+<link rel="dns-prefetch" href="//at.alicdn.com">
+<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=6.6" type="text/css" media="all">
+<style id="classic-theme-styles-inline-css" type="text/css">/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}</style>
+<style id="global-styles-inline-css" type="text/css">:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
+:root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}</style>
+<link rel="stylesheet" id="cxm2-bootstrap-css" href="/wp-content/themes/meteor/assets/css/bootstrap.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-swiper-css" href="/wp-content/themes/meteor/assets/css/swiper-bundle.min.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-icons-css" href="//at.alicdn.com/t/c/font_1989294_lbwlt58uzfn.css?ver=1.2" type="text/css" media="all">
+<link rel="stylesheet" id="cxm2-main-css" href="/wp-content/themes/meteor/style.css?ver=1.2" type="text/css" media="all">
+<style id="cxm2-main-inline-css" type="text/css">:root, [data-bs-theme=light]{ --bs-link-hover-color:#fe4f70; --cbg-color:#fe5872; --cbg-gradient:var(--cx-gradient-rad); } [data-bs-theme=dark] { --bs-link-hover-color: #fe4f70; }</style>
+<link rel="canonical" href="/archives/415">
+</head>
+
+<body class="post-template-default single single-post postid-415 single-format-standard cxtheme-body cxtheme-width-theme" x-data="MeteorData" :data-bs-theme="darkMode ? 'dark' : ''" :class="{'dark': darkMode,'overflow-y-hidden':popBgshow || searchPopup}">
+    <div class="site-wrapper">
+        <header class="header-s1" :class="{'onfixed' : searchPopup}">
+            <div class="headnav">
+                <div class="container-xl h-container">
+                    <div class="cxlogo">
+                                                <a href="/">
+                            <img src="http://www.guozhiman.top/wp-content/uploads/2024/07/202406201718847016352278-1.png" alt="郭智满的部落！" class="c-light" width="120" height="60">
+                            <img src="http://www.guozhiman.top/wp-content/uploads/2024/07/202406201718847016352278-2.png" alt="郭智满的部落！" class="c-dark" width="120" height="60">
+                        </a>
+                    </div>
+                    <nav class="head-menu d-lg-flex">
+                        <ul id="menu-main-menu" class="navbar-nav">
+                        <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                        </ul>
+                    </nav>
+                    <div class="header-r">
+                        <ul class="h-btnbox sm-cnone">
+                            <li class="list-inline-item">
+                                <a href="/archives/415">
+                                    <i class="cxicon cxicon-ranking"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="javascript:;" @click="darkMode = !darkMode;localStorage.setItem('darkMode', darkMode);">
+                                    <i class="cxicon cxicon-sunlight" :class="{'d-none':darkMode}"></i>
+                                    <i class="cxicon cxicon-moon" :class="{'d-none':!darkMode}"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="h-buttons">
+                            <button type="button" class="search btn-default icon-button" @click="searchPopup = !searchPopup" title="Search Btn">
+                                <i class="cxicon cxicon-search font-inherit" :class=" searchPopup ? 'cxicon-error' : 'cxicon-search'"></i>
+                            </button>
+                            <!-- 移动端菜单 -->
+                            <button type="button" class="search btn-default icon-button" @click="moibleMenu = popBgshow = true" title="Menu Btn">
+                                <i class="cxicon cxicon-menu3 font-inherit"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>            
+        </header><!-- header.end-->
+        <!-- Moible Nav -->
+        <div class="mobile-navbox trans_2ms" :class="{'visible': moibleMenu}">
+            <button type="button" class="btn-close" aria-label="关闭" @click="popBgshow = moibleMenu = false"></button>
+            <div class="m-menulogo p-4 pt-3"></div>
+            <div class="m-navbox p-4 pt-0">
+                <ul id="moible-menu" class="m-nav pe-4">
+                <li class="menu-item"><a href="/archives/category/meirifenxiang">每日分享</a></li>
+<li class="menu-item"><a href="/archives/category/qianduan">前端</a></li>
+<li class="menu-item current-post-ancestor current-menu-parent"><a href="/archives/category/kaiyuan">开源</a></li>
+<li class="menu-item"><a href="/archives/category/docker">Docker</a></li>
+<li class="menu-item"><a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a></li>
+<li class="menu-item"><a href="/archives/category/wangluoanquan">网络安全</a></li>
+<li class="menu-item menu-has-children">
+<a href="/archives/category/caozuoxitong">操作系统 <i class="cxicon cxicon-chevron-down menu-children-icon"></i></a>
+<ul class="sub-menu">
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/windows">Win系统</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a></li>
+	<li class="menu-item"><a href="/archives/category/caozuoxitong/guochanxitong">国产系统</a></li>
+</ul>
+</li>
+                </ul>
+            </div>
+        </div>
+        <!-- MN.end -->
+        
+
+        <main class="main-container" role="main">
+<div class="banner trem-banner mb-4">
+    <div class="container-xl">
+        
+            <nav class="breadcrumbs" aria-label="面包屑导航">
+                <ol class="breadcrumb flex-nowrap">
+                
+        <li class="item-home flex-shrink-0">
+            <a href="/" title="郭智满的部落！">
+                <span>首页</span>
+            </a>
+        </li>
+
+        <li class="item-category flex-shrink-0">
+            <a href="/archives/category/kaiyuan" title="开源">
+                <span>开源</span>
+            </a>
+        </li>
+
+        <li class="item-current line-one pe-4">
+            <a href="/archives/415" title="GitHub上的宝藏：一套免费、开源的医院管理系统">
+                <span>GitHub上的宝藏：一套免费、开源的医院管理系统</span>
+            </a>
+        </li>
+                </ol>
+            </nav>
+                </div>
+</div>
+<!-- 3 -->
+<section class="wi widget-coltow">
+    <div class="container-xl">
+        <div class="row cxrow">
+            <div class="col-left">
+                <div class="rowleft">
+                    <div class="main-content pe-xl-4">
+                        <article id="post-43" class="post is-single post-content status-publish" x-data="cxm2_Postmeta">
+    <!-- 文章标题 -->
+    <header class="post-header">
+        <h1 class="post-title mt-3 mb-4 fs-2">GitHub上的宝藏：一套免费、开源的医院管理系统</h1>        <!-- 文章元信息（如作者、发布时间、分类、标签等） -->
+        <div class="article-meta">
+<ul class="meta-itembox">
+<li class="list-inline-item"><a class="author me-0" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" decoding="async"></figure>guozhiman</a></li>
+<li class="list-inline-item"><a href="/archives/category/kaiyuan" rel="category tag">开源</a></li>
+<li class="list-inline-item">2024年7月22日</li>
+</ul>
+</div>    </header>
+
+    <!-- 文章正文 -->
+    <div class="article-body mb-4">
+        
+<p>今天分享一套开源医院管理系统</p>
+
+
+
+<p>源代码：</p>
+
+
+
+<p>http://www.gitpp.com/zlcj/hospital-management-system</p>
+
+
+
+<p>使用 MySQL、Php 和 Bootstrap 的医院管理系统<strong></strong></p>
+
+
+
+<p><strong>功能</strong></p>
+
+
+
+<ol class="wp-block-list">
+<li>医生能够接受预约，以确认患者他们的预约已获批准。</li>
+
+
+
+<li>如果用户尝试提供已注册的电子邮件 ID，则不应允许他/她注册。</li>
+
+
+
+<li>密码应该加密，并且密码字段不应该显示在管理面板中。</li>
+
+
+
+<li>对应用程序中的所有列表视图实现分页。</li>
+
+
+
+<li>错误修复 &#8211; 如果患者多次与同一位医生联系，则账单支付收据包含多条记录。</li>
+
+
+
+<li>在处方声明中添加更多字段，使其更加具体。</li>
+
+
+
+<li>添加更多有关付款的详细信息 &#8211; 例如付款日期、付款金额等。</li>
+
+
+
+<li>在管理模块中实现导出按钮，将所有详细信息导出到 Excel 表。</li>
+</ol>
+
+
+
+<h2 class="wp-block-heading">进入项目：</h2>
+
+
+
+<p>php 和 mysql 医院管理系统。该系统有一个“主页”，患者、医生和管理员可以通过切换相应的选项卡登录到他们的帐户。图 1.1 显示了我们项目的“主页”。</p>
+
+
+
+<figure class="wp-block-image"><img fetchpriority="high" decoding="async" class="alignnone size-full wp-image-420" src="/wp-content/uploads/2024/07/640-38.png" width="780" height="442" alt="640-38" title="640-38"></figure>
+
+
+
+<p>“关于我们”页面（图 1.2）让我们可以获得更多有关医院质量和服务的信息。</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" class="alignnone size-full wp-image-421" src="/wp-content/uploads/2024/07/640-39.png" width="780" height="450" alt="640-39" title="640-39"></figure>
+
+
+
+<p>“联系”页面允许用户提供有关医院服务的反馈或疑问。图 1.3 显示了“联系”页面。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-422" src="/wp-content/uploads/2024/07/640-40.png" width="778" height="428" alt="640-40" title="640-40"></figure>
+
+
+
+<p>‘主页’包含 3 个模块：</p>
+
+
+
+<ol class="wp-block-list">
+<li>患者模块</li>
+
+
+
+<li>医生模块</li>
+
+
+
+<li>管理模块</li>
+</ol>
+
+
+
+<h3 class="wp-block-heading">患者模块：</h3>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 该模块允许患者创建自己的帐户、预约看医生并查看他们的预约历史记录。注册页面（位于主页本身）要求患者输入他们的名字、姓氏、电子邮件 ID、联系电话、密码和选择性别的单选按钮。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-423" src="/wp-content/uploads/2024/07/640-41.png" width="780" height="440" alt="640-41" title="640-41"></figure>
+
+
+
+<p>一旦患者点击“注册”按钮创建了自己的账户，他将被重定向到自己的仪表板（图 1.5）。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-424" src="/wp-content/uploads/2024/07/640-42.png" width="778" height="424" alt="640-42" title="640-42"></figure>
+
+
+
+<p>仪表板页面允许患者执行两项操作：</p>
+
+
+
+<p>1. 预约：</p>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 在这里，患者可以预约看医生。预约表（图 1.6）要求患者选择他们想要看的医生、他们想要与医生见面的日期和时间。咨询费将相应地显示给患者，因为医生已经确定了费用。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-425" src="/wp-content/uploads/2024/07/640-43.png" width="778" height="425" alt="640-43" title="640-43"></figure>
+
+
+
+<p>点击“创建新条目”按钮后，患者将收到确认患者预约成功的提醒。（见图 1.7）</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-426" src="/wp-content/uploads/2024/07/640-44.png" width="779" height="335" alt="640-44" title="640-44"></figure>
+
+
+
+<p>2. 查看患者的预约历史：</p>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 在这里，患者可以看到他们的预约历史记录，其中包含医生姓名、咨询费、预约日期和时间。（见图 1.8）。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-427" src="/wp-content/uploads/2024/07/640-45.png" width="778" height="337" alt="640-45" title="640-45"></figure>
+
+
+
+<p>一旦患者退出帐户，如果他想再次进入帐户，他可以登录帐户，而不必再次注册帐户。图 1.9 显示了登录页面。单击“登录”按钮将把患者重定向到我们之前看到的仪表板页面（图 1.5）</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-428" src="/wp-content/uploads/2024/07/640-46.png" width="778" height="403" alt="640-46" title="640-46"></figure>
+
+
+
+<p>患者模块的工作原理如下。总体而言，该模块允许患者注册他们的帐户或登录他们的帐户（如果他/她有帐户），预约并查看他/她的预约历史记录。</p>
+
+
+
+<h3 class="wp-block-heading">医生模块：</h3>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 医生可以登录他们的帐户，只需将选项卡从“患者”切换到“医生”即可。图 1.10 显示了医生的登录表单。只有管理员才能注册医生帐户。我们将在管理模块中进一步讨论这一点。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-429" src="/wp-content/uploads/2024/07/640-47.png" width="780" height="377" alt="640-47" title="640-47"></figure>
+
+
+
+<p>一旦医生点击“登录”按钮，他们将被重定向到自己的仪表板，如图 1.11 所示</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-430" src="/wp-content/uploads/2024/07/640-48.png" width="780" height="271" alt="640-48" title="640-48"></figure>
+
+
+
+<p>在此页面中，医生可以看到患者已预约的预约。图 1.12 显示了患者“Kenny Sebastian”已预约的医生“Ganesh”的预约（图 1.6）。这意味着医生“Ganesh”将于 2019 年 10 月 10 日上午 10 点与患者“Kenny Sebastian”预约。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-431" src="/wp-content/uploads/2024/07/640-49.png" width="779" height="230" alt="640-49" title="640-49"></figure>
+
+
+
+<p>实时情况下，医生会有数千个预约。如果预约较多，医生搜索预约会更方便。为了方便起见，我在导航栏中设置了一个“搜索”框（见图 1.12），医生可以通过联系电话搜索患者。完成所有操作后，医生可以退出其帐户。因此，一般来说，医生可以登录其帐户，查看预约并搜索患者。这就是医生模块的全部内容。</p>
+
+
+
+<h3 class="wp-block-heading">管理模块：</h3>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 该模块是我们项目的核心，管理员可以在此查看所有患者的列表。医生和预约以及从“联系”页面收到的反馈/查询。管理员也可以添加医生。可以通过切换到主页的管理员选项卡来登录管理员帐户。图 1.13 显示了管理员的登录页面。&nbsp; &nbsp; &nbsp;&nbsp;<code>username</code>：admin，<code>password</code>：admin123</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-432" src="/wp-content/uploads/2024/07/640-50.png" width="778" height="365" alt="640-50" title="640-50"></figure>
+
+
+
+<p>点击“登录”按钮后，管理员将被重定向到他/她的仪表板，如图 1.14 所示。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-433" src="/wp-content/uploads/2024/07/640-51.png" width="778" height="384" alt="640-51" title="640-51"></figure>
+
+
+
+<p>该模块允许管理员执行五项主要操作：</p>
+
+
+
+<p>1.查看所有已登记患者列表：</p>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 管理员可以查看所有已注册的患者。这包括患者的名字、姓氏、电子邮件 ID、联系电话和密码。（见图 1.15）。与医生模块一样，管理员也可以在搜索框中通过联系电话搜索患者。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-434" src="/wp-content/uploads/2024/07/640-52.png" width="777" height="435" alt="640-52" title="640-52"></figure>
+
+
+
+<p>2.查看所有注册医生列表：</p>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 管理员还可以查看医生的详细信息。这些详细信息包括医生姓名、密码、电子邮件和咨询费，如图 1.16 所示。可以使用搜索框中的医生电子邮件 ID 来搜索医生。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-435" src="/wp-content/uploads/2024/07/640-53.png" width="778" height="434" alt="640-53" title="640-53"></figure>
+
+
+
+<p>3. 查看预约列表：</p>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 管理员还可以看到预约的全部详细信息，其中显示了患者与其各自医生的预约详细信息。这包括患者的名字、姓氏、电子邮件和联系电话、医生姓名、预约日期、时间和咨询费。（见图 1.17）。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-436" src="/wp-content/uploads/2024/07/640-54.png" width="739" height="449" alt="640-54" title="640-54"></figure>
+
+
+
+<p>4. 添加医生：</p>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 管理员可以单独添加新医生，因为如果我们将此部分放在主页上，任何人都可以注册为医生。此表单询问医生的姓名、电子邮件 ID、密码及其咨询费。（见图 1.18）</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-437" src="/wp-content/uploads/2024/07/640-55.png" width="778" height="341" alt="640-55" title="640-55"></figure>
+
+
+
+<p>添加新医生后，如果我们查看医生列表，我们将看到新医生的详细信息已添加到列表中，如图1.19所示</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-438" src="/wp-content/uploads/2024/07/640-56.png" width="777" height="454" alt="640-56" title="640-56"></figure>
+
+
+
+<p>5.查看用户的反馈/疑问：</p>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 管理员可以在“联系”页面查看用户给出的反馈/查询（参见图 1.3）。这包括用户姓名、电子邮件 ID、联系电话和消息（反馈/查询），如图 1.20 所示。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-439" src="/wp-content/uploads/2024/07/640-57.png" width="777" height="453" alt="640-57" title="640-57"></figure>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 综合考虑，管理员可以查看患者和医生的详细信息、预约详细信息、用户反馈，并可以添加新医生。完成所有操作后，管理员可以从其帐户注销。</p>
+
+
+
+<h2 class="wp-block-heading">更新</h2>
+
+
+
+<h3 class="wp-block-heading">1. 取消预约</h3>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 患者和医生可以删除他们的预约。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-440" src="/wp-content/uploads/2024/07/640-58.png" width="1080" height="527" alt="640-58" title="640-58"></figure>
+
+
+
+<p>如果患者删除了最后一条记录（针对医生 Ganesh），则“当前状态”栏中将显示“由您删除”标签，并且操作将变为取消状态。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-441" src="/wp-content/uploads/2024/07/640-59.png" width="1080" height="525" alt="640-59" title="640-59"></figure>
+
+
+
+<p>现在，如果我们登录医生 Ganesh 的账户并查看他的预约详情，那么它将如下所示：</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-442" src="/wp-content/uploads/2024/07/640-60.png" width="1080" height="521" alt="640-60" title="640-60"></figure>
+
+
+
+<p>同样，医生也可以删除他们的预约，患者可以查看更新的预约详情。</p>
+
+
+
+<h3 class="wp-block-heading">2. 管理员删除医生</h3>
+
+
+
+<p>&nbsp; &nbsp; &nbsp; 管理员还可以从系统中删除医生。这让管理员可以更好地控制系统。</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" decoding="async" class="alignnone size-full wp-image-443" src="/wp-content/uploads/2024/07/640-61.png" width="1080" height="514" alt="640-61" title="640-61"></figure>
+
+
+
+<p><strong>本系统包括以下工作站：</strong></p>
+
+
+
+<p>门诊医生工作站、药房医生工作站、医技医生工作站、收费员工作站、对账员工作站、管理员工作站。</p>
+
+
+
+<p><strong>不过中国的医院信息化已经取得了显著的发展，许多医院已经建立了相对完善的医院信息系统（HIS）。</strong>随着技术的进步和市场的成熟，过去那种简单基于开源项目进行商业化开发的时代已经逐渐过去。现在的医院信息系统更加注重个性化需求、数据安全、以及与医院具体运营流程的紧密结合。</p>
+
+
+
+<p>同时，国外系统与国内系统的需求差异确实存在。国外医院在系统需求上可能更注重与医疗保险系统的对接、电子病历的标准化、以及远程医疗服务等方面，而国内医院更侧重于就诊流程的优化、医疗数据的安全性和隐私保护、以及与国内医疗政策和法规的符合性。</p>
+
+
+
+<p>尽管如此，对于学习者和开发者来说，研究和参考现有的医院管理系统项目仍然具有重要的价值。通过分析这些项目，可以了解：</p>
+
+
+
+<ol class="wp-block-list">
+<li>系统架构：如何设计和实现一个大规模、高可用性的信息系统。</li>
+
+
+
+<li>数据处理：如何高效地处理和管理大量的医疗数据。</li>
+
+
+
+<li>安全性和隐私保护：在处理敏感的医疗信息时，如何确保数据的安全和隐私。</li>
+
+
+
+<li>用户体验设计：如何设计直观易用的界面，以适应医院工作人员快节奏的工作环境。</li>
+
+
+
+<li>系统整合：如何将不同的医疗设备和信息系统整合到一个统一的平台中。</li>
+</ol>
+
+
+
+<p>此外，通过对这些项目的学习，还可以提高对医疗行业信息化的理解，为未来可能的职业发展或项目开发积累宝贵的知识和经验。因此，即使是在医院信息化较为成熟的中国市场，深入研究和学习医院管理系统仍然具有重要的意义。</p>
+
+
+
+<p>视频演示：</p>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+https://www.youtube.com/watch?v=W2XGSM5i9P8
+</div></figure>
+
+
+
+<p>源代码：</p>
+
+
+
+<p>http://www.gitpp.com/zlcj/hospital-management-system</p>
+    </div>
+
+    <!-- 底部元信息 -->
+    <div class="post-footmeta mb-4">
+        <div class="row d-flex align-items-center">
+            <div class="col-md-6 col-12">
+                <div class="post-share justify-content-sm-start mb-3 mb-sm-0">
+                    <div class="post-btnmeta">
+                        <span class="post-like trans_2ms" :class="postMeta.postLike_on ? 'on' : ''" @click="_setlike"><i class="cxicon cxicon-zan-black"></i> <em style="font-style: normal" x-text="postMeta.postLike" x-show="postMeta.postLike !== 0"></em></span>
+                    </div>
+                    <i class="cxline-1"></i>
+                    <ul class="social-icons" x-data="{'postThumb':'/wp-content/uploads/2024/07/640-38.png','postLink' : window.location.href, 'postTitle' : document.title}">
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微信" x-bind="weixinLink"><i class="cxicon cxicon-weixin"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到微博" x-bind="weiboLink"><i class="cxicon cxicon-weibo"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="javascript:;" title="分享到QQ" x-bind="qqLink"><i class="cxicon cxicon-qq"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-12 text-center text-md-end">
+                <div class="tags">
+                                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-author p-4 mt-5 flex-sm-row">
+        <div class="thumb"><a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=100&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=200&#038;d=mm&#038;r=g 2x" class="avatar avatar-100 photo" height="100" width="100" loading="lazy" decoding="async"></figure></a></div>        <div class="details ps-sm-4 mt-3 mt-sm-0 text-sm-start">
+            <h4 class="name"><a href="/archives/author/guozhiman" title="文章作者 guozhiman" rel="author">guozhiman</a></h4>
+            <p>暂无介绍....</p>
+            <ul class="social-icons list-unstyled list-inline mb-0">
+                <!-- 社交信息 -->
+                <li class="list-inline-item">
+                    <a href="#"><i class="cxicon cxicon-weixin"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-weibo"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" target="_blank"><i class="cxicon cxicon-qq"></i></a>
+                </li>
+                <li class="list-inline-item">
+                    <i class="cxline-1 ms-0 me-2"></i>
+                    <a href="/archives/author/guozhiman" class="author-link">TA的主页 <i class="cxicon cxicon-jtright font-inherit"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row nextprev-post-wrapper mb-4">
+        <div class="col-md-6 col-12 mb-3 mb-sm-0">
+            <div class="nextprev-post prev">
+                <span class="nextprev-text"> 上一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/413" rel="prev">开源远程桌面，TeamViewer 的替代品</a>                </h5>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="nextprev-post next text-sm-end">
+                <span class="nextprev-text">下一篇</span>
+                <h5 class="post-title">
+                    <a href="/archives/417" rel="next">OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http</a>                </h5>
+            </div>
+        </div>
+    </div>
+
+    <section class="comments">
+        <!-- 评论区代码 -->
+    </section>
+
+    <div class="mso nobg">
+        <div class="module-tit item-center noborder">
+            <h3 style="font-size:1rem">
+<i class="cxline"></i>延伸阅读:</h3>
+            <p></p>
+        </div>
+        <div class="module-content">
+        <div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/415">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-38.png" width="280" height="180" alt="GitHub上的宝藏：一套免费、开源的医院管理系统">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/kaiyuan" class="sort sort-1">开源</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/415">GitHub上的宝藏：一套免费、开源的医院管理系统</a></h5>
+            <p class="pdesc">今天分享一套开源医院管理系统 源代码： http://www.gitpp.com/zlcj/hospital-manag...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/415" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/413">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-62.png" width="280" height="180" alt="开源远程桌面，TeamViewer 的替代品">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/kaiyuan" class="sort sort-1">开源</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/413">开源远程桌面，TeamViewer 的替代品</a></h5>
+            <p class="pdesc">Rustdesk开源远程桌面，TeamViewer 的替代品 源代码： http://www.gitpp.com/jw/...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/413" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/411">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-65.png" width="280" height="180" alt="免费！小区物业管理系统 开源">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/kaiyuan" class="sort sort-1">开源</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/411">免费！小区物业管理系统 开源</a></h5>
+            <p class="pdesc">HC社区管理系统是一套saas物业管理系统，包括房产、业主、收费（可在线支付）、报修申请（可在线报修）、投诉建议、采购、...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/411" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/409">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/640-67.png" width="280" height="180" alt="一款开源的设备资产管理系统">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/kaiyuan" class="sort sort-1">开源</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/409">一款开源的设备资产管理系统</a></h5>
+            <p class="pdesc">Ralph 是用于数据中心和后台硬件的 CMDB/资产管理系统 源代码： http://www.gitpp.com/ra...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月22日</span>                </div>
+                <div class="r">
+                    <a href="/archives/409" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="item-jx item-blog small">
+    <div class="jxbox">
+        <div class="thumb">
+            <a href="/archives/208">
+                <div class="thumb-inner">
+                    <img loading="lazy" decoding="async" src="/wp-content/uploads/2024/07/20240711080335172065621518742.jpeg" width="280" height="180" alt="一款免费且不限速的远控工具|远控">
+                </div>
+            </a> 
+            <div class="sortbox">
+                
+                        <a href="/archives/category/kaiyuan" class="sort sort-1">开源</a>
+                                    </div>                                           
+        </div>
+        <div class="subtitle">
+            
+            <!-- <p><span class="author">小牛爱奋斗</span>｜<span class="time">2023.10.21</span></p> -->
+            <h5><a href="/archives/208">一款免费且不限速的远控工具|远控</a></h5>
+            <p class="pdesc">0x01 工具介绍&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;RdViewer Pro Lite是...</p>
+            <div class="pmbox">
+                <div class="l">
+                    <a class="author" href="/archives/author/guozhiman"><figure class="figure-avatar  btn-default userid-1"><img alt="" src="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=30&#038;d=mm&#038;r=g" srcset="http://cn.cravatar.com/avatar/740a87cfff4579440e19183a73f02b68?s=60&#038;d=mm&#038;r=g 2x" class="avatar avatar-30 photo" height="30" width="30" loading="lazy" decoding="async"></figure>guozhiman</a> <i class="cxicon cxicon-dian color-grad"></i> <span class="time">2024年7月21日</span>                </div>
+                <div class="r">
+                    <a href="/archives/208" class="more-link"><i class="cxicon cxicon-caidan-h"></i></a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>        </div>
+    </div>
+</article>                    </div>
+                </div>
+            </div>
+            
+            <div class="col-right" id="sidebar">
+    <div class="rowright">
+        <aside class="side-area">
+            <div class="widget widget_block widget_search"><form role="search" method="get" action="/" class="wp-block-search__button-outside wp-block-search__text-button wp-block-search">
+<label class="wp-block-search__label" for="wp-block-search__input-1">搜索</label><div class="wp-block-search__inside-wrapper ">
+<input class="wp-block-search__input" id="wp-block-search__input-1" placeholder="" value="" type="search" name="s" required><button aria-label="搜索" class="wp-block-search__button wp-element-button" type="submit">搜索</button>
+</div>
+</form></div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期文章</h2>
+
+
+<ul class="wp-block-latest-posts__list wp-block-latest-posts">
+<li><a class="wp-block-latest-posts__post-title" href="/archives/417">OpenResty实战系列 | 异步非阻塞HTTP客户端库 Lua-Resty-Http</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/415">GitHub上的宝藏：一套免费、开源的医院管理系统</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/413">开源远程桌面，TeamViewer 的替代品</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/411">免费！小区物业管理系统 开源</a></li>
+<li><a class="wp-block-latest-posts__post-title" href="/archives/409">一款开源的设备资产管理系统</a></li>
+</ul>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">近期评论</h2>
+
+
+<div class="no-comments wp-block-latest-comments">没有评论可显示。</div>
+</div></div>
+</div>
+<div class="widget widget_block">
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
+<h2 class="wp-block-heading">分类</h2>
+
+
+<ul class="wp-block-categories-list wp-block-categories">	<li class="cat-item cat-item-4">
+<a href="/archives/category/docker">Docker</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/archives/category/caozuoxitong/linuxunix">Linux/Unix</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/archives/category/caozuoxitong/windows">Win系统</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/archives/category/qianduan">前端</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/archives/category/kaiyuan">开源</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/archives/category/%e6%8a%80%e6%9c%af%e6%96%87%e7%ab%a0">技术文章</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/archives/category/meirifenxiang">每日分享</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/archives/category/wangluoanquan">网络安全</a>
+</li>
+</ul>
+</div></div>
+</div>        </aside>
+    </div>
+</div>        </div>
+    </div>
+</section>
+<!-- 3.end -->
+
+        </main><!-- main.end -->
+
+        <footer class="footer-s1">
+            <div class="linebox bg-auto"></div>
+            <div class="foottop">
+                <div class="container-xl">
+                    <div class="footmain-box">
+                        <div class="aboutus_link">
+<a href="https://www.baidu.com/" target="_blank">百度一下</a><a href="https://yunsuo.qianxin.com/" target="_blank">云锁</a><a href="https://www.d99net.net/" target="_blank">D盾</a>
+</div>
+<div class="footer-desc">免责声明：本网站部分内容由用户自行上传，如权利人发现存在误传其作品情形，请及时与本站联系。</div>
+<div class="foot-copyright">郭智满 © 2024. All Rights Reserved</div>                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- 弹出层代码 -->
+        <div class="popbg-box trans_2ms" :class="{'visible': popBgshow}" @click="popBgshow = moibleMenu = false"></div>
+        <div class="search-popup trans_2ms" :class="{'visible': searchPopup}">
+            <button type="button" class="btn-close " aria-label="Close" @click="searchPopup = false"></button>
+            <div class="search-content">
+                <div class="search-form-box">
+                    <form class="d-flex search-form" method="get" action="">
+                        <input class="form-control me-2" placeholder="搜索并按回车键..." type="text" name="s" id="search" value="" aria-label="搜索">
+                        <button class="btn btn-default btn-lg" type="submit" style="padding: 9.5px 36px;"><i class="cxicon cxicon-search"></i></button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <!-- .end -->
+        </div>
+        <!--.sit-wrapper-->
+        <script type="text/javascript" src="/wp-content/themes/meteor/assets/js/swiper-bundle.min.js?ver=1.2" id="cxm2-swiper-js"></script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/plugins.min.js?ver=1.2" id="cxm2-plugins-js"></script>
+<script type="text/javascript" id="cxm2-alpine-js-extra">
+/* <![CDATA[ */
+var cxjs = {"homeurl":"","jsonapi":"\/wp-json\/cxv1\/","themedir":"\/wp-content\/themes\/meteor","ajaxurl":"\/wp-admin\/admin-ajax.php","postId":"415"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="/wp-content/themes/meteor/assets/js/alpine.min.js?ver=3.13.10" id="cxm2-alpine-js"></script>
+        </body>
+
+        </html>
